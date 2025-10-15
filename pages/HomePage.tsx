@@ -388,7 +388,13 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
               </div>
             ) : (
               projects.map((project, index) => (
-                <ProjectCard key={index} {...project} darkMode={darkMode} index={index} />
+                <ProjectCard
+                  key={index}
+                  {...project}
+                  darkMode={darkMode}
+                  index={index}
+                  onClick={() => onNavigate('projects')}
+                />
               ))
             )}
           </div>

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { LogOut, BarChart3, Users, DollarSign, Target, Sun, Moon } from 'lucide-react';
 import { ProjectsManager } from './ProjectsManager';
-import { DonationsManager } from './DonationsManager';
 import { getDashboardStats } from '@/utils/supabase/helpers';
 
 interface AdminDashboardProps {
@@ -12,7 +11,6 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ darkMode, toggleDarkMode, onLogout }: AdminDashboardProps) {
-    const [activeTab, setActiveTab] = useState('projects');
     const [stats, setStats] = useState([
         { name: 'Total Projects', value: '0', icon: Target, color: 'from-blue-500 to-blue-600' },
         { name: 'Total Raised', value: '$0', icon: DollarSign, color: 'from-green-500 to-green-600' },
@@ -22,7 +20,6 @@ export function AdminDashboard({ darkMode, toggleDarkMode, onLogout }: AdminDash
 
     const tabs = [
         { id: 'projects', name: 'Projects', icon: Target },
-        { id: 'donations', name: 'Donations', icon: DollarSign },
     ];
 
     // Load dashboard stats
@@ -122,37 +119,8 @@ export function AdminDashboard({ darkMode, toggleDarkMode, onLogout }: AdminDash
                 ))}
             </div>
 
-            {/* Navigation Tabs */}
-            <div className="flex space-x-1 mb-8">
-                {tabs.map((tab) => (
-                    <motion.button
-                        key={tab.id}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => setActiveTab(tab.id)}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${activeTab === tab.id
-                            ? 'bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white shadow-lg shadow-[#ff6f0f]/30'
-                            : darkMode
-                                ? 'bg-[#1a2f5f] text-gray-300 hover:bg-[#2a3f6f] border border-white/10'
-                                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-                            }`}
-                    >
-                        <tab.icon className="w-5 h-5" />
-                        {tab.name}
-                    </motion.button>
-                ))}
-            </div>
-
             {/* Content */}
-            <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-            >
-                {activeTab === 'projects' && <ProjectsManager darkMode={darkMode} />}
-                {activeTab === 'donations' && <DonationsManager darkMode={darkMode} />}
-            </motion.div>
+            <ProjectsManager darkMode={darkMode} onRefresh={loadStats} />
         </div>
     );
 }

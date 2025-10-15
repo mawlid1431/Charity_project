@@ -5,9 +5,10 @@ import { DonationForm } from '../components/DonationForm';
 
 interface DonatePageProps {
   darkMode: boolean;
+  onNavigate: (page: string) => void;
 }
 
-export function DonatePage({ darkMode }: DonatePageProps) {
+export function DonatePage({ darkMode, onNavigate }: DonatePageProps) {
   const benefits = [
     {
       icon: Shield,
@@ -56,30 +57,196 @@ export function DonatePage({ darkMode }: DonatePageProps) {
 
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-[#0a1628]' : 'bg-white'}`}>
-      {/* Header Section */}
-      <section className={`relative py-32 overflow-hidden ${darkMode ? 'bg-gradient-to-r from-[#0f1c3f] to-[#1a2f5f]' : 'bg-gradient-to-r from-[#1a2f5f] to-[#2a4f7f]'}`}>
+      {/* Beautiful Animated Arabic/English Header */}
+      <section className={`relative py-24 overflow-hidden ${darkMode ? 'bg-gradient-to-br from-[#0f1c3f] via-[#1a2f5f] to-[#0f1c3f]' : 'bg-gradient-to-br from-[#1a2f5f] via-[#2a4f7f] to-[#1a2f5f]'}`}>
         <DecorativeElements />
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Animated Background Orbs */}
+        <div className="absolute inset-0 opacity-20">
+          <motion.div
+            animate={{
+              scale: [1, 1.2, 1],
+              x: [0, 50, 0],
+              y: [0, 30, 0]
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-10 left-10 w-72 h-72 bg-[#ff6f0f] rounded-full blur-3xl"
+          ></motion.div>
+          <motion.div
+            animate={{
+              scale: [1, 1.3, 1],
+              x: [0, -50, 0],
+              y: [0, -30, 0]
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute bottom-10 right-10 w-96 h-96 bg-[#ff8f3f] rounded-full blur-3xl"
+          ></motion.div>
+        </div>
+
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <motion.p
+            {/* Decorative Top Stars */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1, type: "spring" }}
+              className="flex items-center justify-center gap-4 mb-8"
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="text-4xl"
+              >
+                ✨
+              </motion.div>
+              <motion.div
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="text-5xl"
+              >
+                🌟
+              </motion.div>
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="text-4xl"
+              >
+                ✨
+              </motion.div>
+            </motion.div>
+
+            {/* Arabic Text with Glow Effect */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
+              className="mb-8"
+            >
+              <motion.h1
+                className="text-6xl md:text-8xl font-bold text-white mb-6 drop-shadow-2xl"
+                style={{
+                  fontFamily: 'Arial, sans-serif',
+                  textShadow: '0 0 40px rgba(255, 111, 15, 0.5), 0 0 80px rgba(255, 111, 15, 0.3)'
+                }}
+                animate={{
+                  textShadow: [
+                    '0 0 40px rgba(255, 111, 15, 0.5)',
+                    '0 0 60px rgba(255, 111, 15, 0.8)',
+                    '0 0 40px rgba(255, 111, 15, 0.5)'
+                  ]
+                }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                الصدقة بركة لا تنتهي
+              </motion.h1>
+
+              {/* Animated Decorative Line */}
+              <div className="flex items-center justify-center gap-6 mb-6">
+                <motion.div
+                  className="h-1 w-32 bg-gradient-to-r from-transparent via-[#ff6f0f] to-[#ff8f3f] rounded-full"
+                  animate={{
+                    scaleX: [1, 1.2, 1],
+                    opacity: [0.5, 1, 0.5]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                ></motion.div>
+                <motion.div
+                  className="relative"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                >
+                  <div className="w-4 h-4 bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] rounded-full"></div>
+                  <motion.div
+                    className="absolute inset-0 w-4 h-4 bg-[#ff6f0f] rounded-full"
+                    animate={{ scale: [1, 1.5, 1], opacity: [1, 0, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  ></motion.div>
+                </motion.div>
+                <motion.div
+                  className="h-1 w-32 bg-gradient-to-r from-[#ff8f3f] via-[#ff6f0f] to-transparent rounded-full"
+                  animate={{
+                    scaleX: [1, 1.2, 1],
+                    opacity: [0.5, 1, 0.5]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                ></motion.div>
+              </div>
+            </motion.div>
+
+            {/* English Text */}
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-[#ff6f0f] mb-4 tracking-wider uppercase"
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="space-y-4"
             >
-              Support Our Cause
-            </motion.p>
-            <h1 className="text-white mb-6">
-              Every Donation Changes Lives
-            </h1>
-            <p className="text-white/80 max-w-2xl mx-auto">
-              Your generosity transforms lives. Every contribution, no matter the size, makes a meaningful impact in communities around the world.
-            </p>
+              <h2 className="text-4xl md:text-5xl font-bold text-white">
+                Charity is a blessing that never ends
+              </h2>
+              <motion.p
+                className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+              >
+                Your generosity creates lasting impact and brings hope to those in need
+              </motion.p>
+            </motion.div>
+
+            {/* Animated Hearts */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.8 }}
+              className="mt-10 flex items-center justify-center gap-4"
+            >
+              {[0, 0.2, 0.4].map((delay, i) => (
+                <motion.div
+                  key={i}
+                  animate={{
+                    y: [0, -10, 0],
+                    scale: [1, 1.2, 1]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: delay
+                  }}
+                  className="text-3xl"
+                >
+                  ❤️
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Bouncing Dots */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+              className="mt-8 flex items-center justify-center gap-3"
+            >
+              {[0, 0.15, 0.3].map((delay, i) => (
+                <motion.div
+                  key={i}
+                  className="w-3 h-3 bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] rounded-full"
+                  animate={{
+                    y: [0, -15, 0],
+                    scale: [1, 1.3, 1]
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    delay: delay,
+                    ease: "easeInOut"
+                  }}
+                ></motion.div>
+              ))}
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -91,11 +258,10 @@ export function DonatePage({ darkMode }: DonatePageProps) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className={`rounded-3xl p-8 md:p-12 shadow-2xl ${
-              darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
-            }`}
+            className={`rounded-3xl p-8 md:p-12 shadow-2xl ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
+              }`}
           >
-            <DonationForm darkMode={darkMode} />
+            <DonationForm darkMode={darkMode} onNavigate={onNavigate} />
           </motion.div>
         </div>
       </section>
@@ -126,9 +292,8 @@ export function DonatePage({ darkMode }: DonatePageProps) {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className={`rounded-2xl p-6 ${
-                  darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
-                } shadow-lg hover:shadow-2xl transition-all cursor-pointer`}
+                className={`rounded-2xl p-6 ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
+                  } shadow-lg hover:shadow-2xl transition-all cursor-pointer`}
               >
                 <div className={`w-16 h-16 rounded-full bg-gradient-to-r ${level.color} flex items-center justify-center mb-4 text-white`}>
                   <span className="text-lg">{level.amount}</span>
@@ -167,9 +332,8 @@ export function DonatePage({ darkMode }: DonatePageProps) {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className={`flex gap-6 p-6 rounded-2xl ${
-                  darkMode ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-100'
-                }`}
+                className={`flex gap-6 p-6 rounded-2xl ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-100'
+                  }`}
               >
                 <div className="flex-shrink-0">
                   <div className="w-14 h-14 bg-gradient-to-br from-[#ff6f0f]/20 to-[#4a90e2]/20 rounded-xl flex items-center justify-center">
@@ -193,7 +357,7 @@ export function DonatePage({ darkMode }: DonatePageProps) {
       {/* Testimonial Section */}
       <section className={`py-20 relative overflow-hidden ${darkMode ? 'bg-gradient-to-r from-[#0f1c3f] to-[#1a2f5f]' : 'bg-gradient-to-r from-[#1a2f5f] to-[#2a4f7f]'}`}>
         <DecorativeElements />
-        
+
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

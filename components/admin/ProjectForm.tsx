@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { X, Save, Image as ImageIcon, MapPin, Calendar, FileText, DollarSign, Activity, Upload, Loader } from 'lucide-react';
+import { X, Save, Image as ImageIcon, MapPin, Calendar, FileText, DollarSign, Activity, Upload, Loader, Link } from 'lucide-react';
 import { supabase } from '@/utils/supabase/client';
 
 interface Project {
@@ -12,6 +12,7 @@ interface Project {
     image: string;
     targetAmount: number;
     raisedAmount: number;
+    donationLink: string;
     status: 'active' | 'completed' | 'paused';
 }
 
@@ -31,6 +32,7 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
         image: '',
         targetAmount: 0,
         raisedAmount: 0,
+        donationLink: '',
         status: 'active' as 'active' | 'completed' | 'paused'
     });
 
@@ -48,6 +50,7 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                 image: project.image,
                 targetAmount: project.targetAmount,
                 raisedAmount: project.raisedAmount,
+                donationLink: project.donationLink || '',
                 status: project.status
             });
             setImagePreview(project.image);
@@ -378,6 +381,29 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                                     }`}
                             />
                         </div>
+                    </div>
+
+                    {/* Donation Link */}
+                    <div>
+                        <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                            }`}>
+                            <Link className="w-4 h-4" />
+                            Donation Link
+                        </label>
+                        <input
+                            type="url"
+                            name="donationLink"
+                            value={formData.donationLink}
+                            onChange={handleChange}
+                            placeholder="https://paypal.me/yourproject"
+                            className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
+                                ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                }`}
+                        />
+                        <p className={`text-xs mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                            Optional: PayPal, Stripe, or any donation page URL
+                        </p>
                     </div>
 
                     {/* Status */}

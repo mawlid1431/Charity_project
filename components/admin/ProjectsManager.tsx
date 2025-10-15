@@ -14,15 +14,17 @@ interface Project {
     image: string;
     targetAmount: number;
     raisedAmount: number;
+    donationLink: string;
     status: 'active' | 'completed' | 'paused';
     createdAt: string;
 }
 
 interface ProjectsManagerProps {
     darkMode: boolean;
+    onRefresh?: () => void;
 }
 
-export function ProjectsManager({ darkMode }: ProjectsManagerProps) {
+export function ProjectsManager({ darkMode, onRefresh }: ProjectsManagerProps) {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
@@ -46,6 +48,7 @@ export function ProjectsManager({ darkMode }: ProjectsManagerProps) {
                 image: p.image,
                 targetAmount: Number(p.target_amount),
                 raisedAmount: Number(p.raised_amount),
+                donationLink: p.donation_link || '',
                 status: p.status,
                 createdAt: p.created_at
             }));
@@ -75,6 +78,7 @@ export function ProjectsManager({ darkMode }: ProjectsManagerProps) {
             await deleteProject(id);
             toast.success('Project deleted successfully');
             loadProjects();
+            onRefresh?.();
         } catch (error) {
             console.error('Error deleting project:', error);
             toast.error('Failed to delete project');
@@ -93,6 +97,7 @@ export function ProjectsManager({ darkMode }: ProjectsManagerProps) {
                     image: projectData.image,
                     target_amount: projectData.targetAmount,
                     raised_amount: projectData.raisedAmount,
+                    donation_link: projectData.donationLink,
                     status: projectData.status
                 });
                 toast.success('Project updated successfully');
@@ -106,6 +111,7 @@ export function ProjectsManager({ darkMode }: ProjectsManagerProps) {
                     image: projectData.image,
                     target_amount: projectData.targetAmount,
                     raised_amount: projectData.raisedAmount,
+                    donation_link: projectData.donationLink,
                     status: projectData.status
                 });
                 toast.success('Project created successfully');
@@ -113,6 +119,7 @@ export function ProjectsManager({ darkMode }: ProjectsManagerProps) {
             setShowForm(false);
             setEditingProject(null);
             loadProjects();
+            onRefresh?.();
         } catch (error) {
             console.error('Error saving project:', error);
             toast.error('Failed to save project');
