@@ -1,0 +1,127 @@
+import { useState } from 'react';
+import { motion } from 'motion/react';
+import { LogOut, Plus, BarChart3, Users, DollarSign, Target } from 'lucide-react';
+import { ProjectsManager } from './ProjectsManager';
+import { DonationsManager } from './DonationsManager';
+
+interface AdminDashboardProps {
+    darkMode: boolean;
+    onLogout: () => void;
+}
+
+export function AdminDashboard({ darkMode, onLogout }: AdminDashboardProps) {
+    const [activeTab, setActiveTab] = useState('projects');
+
+    const tabs = [
+        { id: 'projects', name: 'Projects', icon: Target },
+        { id: 'donations', name: 'Donations', icon: DollarSign },
+    ];
+
+    const stats = [
+        { name: 'Total Projects', value: '12', icon: Target, color: 'from-blue-500 to-blue-600' },
+        { name: 'Active Donations', value: '$45,230', icon: DollarSign, color: 'from-green-500 to-green-600' },
+        { name: 'Total Donors', value: '1,234', icon: Users, color: 'from-purple-500 to-purple-600' },
+        { name: 'Success Rate', value: '94%', icon: BarChart3, color: 'from-orange-500 to-orange-600' },
+    ];
+
+    return (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-8">
+                <div>
+                    <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        Admin Dashboard
+                    </h1>
+                    <p className={`text-lg mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                        Manage Mubarak Charity operations
+                    </p>
+                </div>
+                <div className="flex gap-3">
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => window.location.href = '/'}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${darkMode
+                            ? 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20'
+                            : 'bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200'
+                            }`}
+                    >
+                        Back to Site
+                    </motion.button>
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={onLogout}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${darkMode
+                            ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20'
+                            : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
+                            }`}
+                    >
+                        <LogOut className="w-4 h-4" />
+                        Logout
+                    </motion.button>
+                </div>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {stats.map((stat, index) => (
+                    <motion.div
+                        key={stat.name}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className={`p-6 rounded-xl ${darkMode ? 'bg-[#1a2f5f] border border-white/10' : 'bg-white border border-gray-200'
+                            } shadow-lg`}
+                    >
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                    {stat.name}
+                                </p>
+                                <p className={`text-2xl font-bold mt-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                    {stat.value}
+                                </p>
+                            </div>
+                            <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${stat.color} flex items-center justify-center`}>
+                                <stat.icon className="w-6 h-6 text-white" />
+                            </div>
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+
+            {/* Navigation Tabs */}
+            <div className="flex space-x-1 mb-8">
+                {tabs.map((tab) => (
+                    <motion.button
+                        key={tab.id}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${activeTab === tab.id
+                            ? 'bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white shadow-lg shadow-[#ff6f0f]/30'
+                            : darkMode
+                                ? 'bg-[#1a2f5f] text-gray-300 hover:bg-[#2a3f6f] border border-white/10'
+                                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                            }`}
+                    >
+                        <tab.icon className="w-5 h-5" />
+                        {tab.name}
+                    </motion.button>
+                ))}
+            </div>
+
+            {/* Content */}
+            <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+            >
+                {activeTab === 'projects' && <ProjectsManager darkMode={darkMode} />}
+                {activeTab === 'donations' && <DonationsManager darkMode={darkMode} />}
+            </motion.div>
+        </div>
+    );
+}

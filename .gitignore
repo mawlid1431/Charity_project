@@ -1,0 +1,79 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# Environment variables
+.env
+*.env
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs and runtime
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Node.js (if applicable)
+node_modules/
+
+# Database and migrations
+*.sqlite3
+*.db
+*.sql
+*.bak
+migrations/
+
+# Media and uploads
+/media/
+uploads/
+*.png
+*.jpg
+*.jpeg
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# Testing
+coverage/
+htmlcov/
+*.cover
+*.pyc
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Git itself
+.git/
+
+# Backup files
+*~
+*.swp
+*.tmp
+
+# Private keys or certs
+*.pem
+*.key
+*.crt
+
+# Misc
+secrets.json
+config.yaml
