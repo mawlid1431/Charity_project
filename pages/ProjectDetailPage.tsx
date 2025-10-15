@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, Calendar, Target, Users, Share2, Heart, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Calendar, Target, Users, Share2, Heart, CheckCircle, ExternalLink } from 'lucide-react';
 import { DonationForm } from '../components/DonationForm';
+import { getProjectById } from '@/utils/supabase/helpers';
 
 interface Project {
     id: string;
@@ -12,6 +13,7 @@ interface Project {
     targetAmount: number;
     raisedAmount: number;
     donorsCount: number;
+    donationLink: string;
     status: 'active' | 'completed' | 'paused';
     createdAt: string;
     category: string;
@@ -31,10 +33,43 @@ interface ProjectDetailPageProps {
 
 export function ProjectDetailPage({ darkMode, projectId, onNavigate }: ProjectDetailPageProps) {
     const [project, setProject] = useState<Project | null>(null);
+    const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('overview');
 
-    // Mock project data - in real app, fetch from API
+    // Load project from Supabase or use mock data
     useEffect(() => {
+        loadProject();
+    }, [projectId]);
+
+    const loadProject = async () => {
+        setLoading(true);
+        try {
+            const data = await getProjectById(projectId);
+            if (data) {
+                setProject({
+                    id: data.id,
+                    name: data.name,
+                    description: data.description,
+                    longDescription: data.description, // Use description as long description
+                    image: data.image,
+                    targetAmount: Number(data.target_amount),
+                    raisedAmount: Number(data.raised_amount),
+                    donorsCount: 0, // You can add this to database later
+                    donationLink: data.donation_link || '',
+                    status: data.status,
+                    createdAt: data.created_at,
+                    category: 'Community Project',
+                    location: data.location,
+                    updates: []
+                });
+                setLoading(false);
+                return;
+            }
+        } catch (error) {
+            console.error('Error loading project:', error);
+        }
+
+        // Fallback to mock project data if not found in database
         const mockProjects: Project[] = [
             {
                 id: '1',
@@ -59,6 +94,7 @@ Your donation directly funds equipment, materials, and expert installation. Ever
                 targetAmount: 50000,
                 raisedAmount: 32500,
                 donorsCount: 245,
+                donationLink: 'https://paypal.me/cleanwater',
                 status: 'active',
                 createdAt: '2024-01-15',
                 category: 'Water & Sanitation',
@@ -117,6 +153,7 @@ Your support helps us build not just schools, but futures. Every contribution br
                 targetAmount: 75000,
                 raisedAmount: 45000,
                 donorsCount: 189,
+                donationLink: 'https://paypal.me/education',
                 status: 'active',
                 createdAt: '2024-02-01',
                 category: 'Education',
@@ -177,6 +214,7 @@ Your donation directly funds medical supplies, equipment, training, and infrastr
                 targetAmount: 100000,
                 raisedAmount: 100000,
                 donorsCount: 412,
+                donationLink: 'https://paypal.me/healthcare',
                 status: 'completed',
                 createdAt: '2023-12-10',
                 category: 'Healthcare',
@@ -192,8 +230,24 @@ Your donation directly funds medical supplies, equipment, training, and infrastr
         ];
 
         const foundProject = mockProjects.find(p => p.id === projectId);
-        setProject(foundProject || null);
-    }, [projectId]);
+        if (foundProject) {
+            setProject(foundProject);
+        }
+        setLoading(false);
+    };
+
+    if (loading) {
+        return (
+            <div className={`min-h-screen pt-20 flex items-center justify-center ${darkMode ? 'bg-[#0a1628]' : 'bg-gray-50'}`}>
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-[#ff6f0f] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className={`text-lg ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                        Loading project...
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     if (!project) {
         return (
@@ -301,7 +355,24 @@ Your donation directly funds medical supplies, equipment, training, and infrastr
                             </div>
 
                             {project.status !== 'completed' && (
-                                <DonationForm darkMode={darkMode} />
+                                <>
+                                    {project.donationLink ? (
+                                        <motion.a
+                                            href={project.donationLink}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            className="w-full flex items-center justify-center gap-2 py-4 px-6 bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white rounded-lg font-semibold shadow-lg shadow-[#ff6f0f]/30 hover:shadow-xl hover:shadow-[#ff6f0f]/40 transition-all"
+                                        >
+                                            <Heart className="w-5 h-5" />
+                                            Donate Now
+                                            <ExternalLink className="w-4 h-4" />
+                                        </motion.a>
+                                    ) : (
+                                        <DonationForm darkMode={darkMode} />
+                                    )}
+                                </>
                             )}
 
                             {/* Share Button */}

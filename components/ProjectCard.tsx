@@ -120,10 +120,6 @@ export function ProjectCard({
         <motion.button
           whileHover={{ scale: 1.03, x: 5 }}
           whileTap={{ scale: 0.98 }}
-          onClick={(e) => {
-            e.stopPropagation();
-            onClick?.();
-          }}
           className="w-full bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] hover:from-[#ff8f3f] hover:to-[#ffa55f] text-white px-6 py-4 rounded-xl transition-all flex items-center justify-center gap-2 group/btn shadow-lg shadow-[#ff6f0f]/20 hover:shadow-xl hover:shadow-[#ff6f0f]/30"
         >
           <span>Learn More</span>
