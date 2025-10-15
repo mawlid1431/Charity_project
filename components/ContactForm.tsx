@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Send, Check } from 'lucide-react';
-import { supabase } from '@/utils/supabase/client';
 import { toast } from 'sonner';
 
 interface ContactFormProps {

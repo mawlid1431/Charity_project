@@ -12,6 +12,7 @@ export interface Database {
                     image: string;
                     target_amount: number;
                     raised_amount: number;
+                    donation_link: string | null;
                     status: 'active' | 'paused' | 'completed';
                     created_at: string;
                     updated_at: string;

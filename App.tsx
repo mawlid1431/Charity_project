@@ -75,7 +75,7 @@ function App({ initialPage = 'home' }: AppProps) {
           {currentPage === 'home' && <HomePage darkMode={darkMode} onNavigate={handleNavigate} />}
           {currentPage === 'projects' && <ProjectsPage darkMode={darkMode} onNavigate={handleNavigate} />}
           {currentPage === 'donate' && <DonatePage darkMode={darkMode} onNavigate={handleNavigate} />}
-          {currentPage === 'about' && <AboutPage darkMode={darkMode} />}
+          {currentPage === 'about' && <AboutPage darkMode={darkMode} onNavigate={handleNavigate} />}
           {currentPage === 'contact' && <ContactPage darkMode={darkMode} />}
           {currentPage === 'project-detail' && selectedProjectId && (
             <ProjectDetailPage

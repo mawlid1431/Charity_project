@@ -93,21 +93,21 @@ export function Footer({ darkMode }: FooterProps) {
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <Mail className="w-5 h-5 text-[#ff6f0f] mt-0.5 flex-shrink-0" />
-                <span className="text-white/70">
-                  info@mubarakcharity.org
-                </span>
+                <a href="mailto:Charitymubarak1@gmail.com" className="text-white/70 hover:text-[#ff6f0f] transition-colors">
+                  Charitymubarak1@gmail.com
+                </a>
               </li>
               <li className="flex items-start gap-2">
                 <Phone className="w-5 h-5 text-[#ff6f0f] mt-0.5 flex-shrink-0" />
-                <span className="text-white/70">
-                  +1 (555) 123-4567
-                </span>
+                <a href="tel:+17816921308" className="text-white/70 hover:text-[#ff6f0f] transition-colors">
+                  +1 781-692-1308
+                </a>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-5 h-5 text-[#ff6f0f] mt-0.5 flex-shrink-0" />
-                <span className="text-white/70">
-                  123 Hope Street, City, Country
-                </span>
+                <a href="https://maps.google.com/?q=Boston+Road+MA+Massachusetts" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[#ff6f0f] transition-colors">
+                  Boston Road, MA, Massachusetts
+                </a>
               </li>
             </ul>
           </div>

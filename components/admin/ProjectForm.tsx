@@ -114,7 +114,7 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
             const filePath = `projects/${fileName}`;
 
             // Upload to Supabase Storage
-            const { data, error } = await supabase.storage
+            const { error } = await supabase.storage
                 .from('project-images')
                 .upload(filePath, file, {
                     cacheControl: '3600',

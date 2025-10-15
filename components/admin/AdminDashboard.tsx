@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { LogOut, BarChart3, Users, DollarSign, Target, Sun, Moon } from 'lucide-react';
+import { LogOut, BarChart3, Users, DollarSign, Target, Sun, Moon, FolderKanban, UsersRound } from 'lucide-react';
 import { ProjectsManager } from './ProjectsManager';
+import { TeamManager } from './TeamManager';
 import { getDashboardStats } from '@/utils/supabase/helpers';
 
 interface AdminDashboardProps {
@@ -11,6 +12,7 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ darkMode, toggleDarkMode, onLogout }: AdminDashboardProps) {
+    const [activeTab, setActiveTab] = useState<'projects' | 'team'>('projects');
     const [stats, setStats] = useState([
         { name: 'Total Projects', value: '0', icon: Target, color: 'from-blue-500 to-blue-600' },
         { name: 'Total Raised', value: '$0', icon: DollarSign, color: 'from-green-500 to-green-600' },
@@ -18,9 +20,7 @@ export function AdminDashboard({ darkMode, toggleDarkMode, onLogout }: AdminDash
         { name: 'Success Rate', value: '0%', icon: BarChart3, color: 'from-orange-500 to-orange-600' },
     ]);
 
-    const tabs = [
-        { id: 'projects', name: 'Projects', icon: Target },
-    ];
+
 
     // Load dashboard stats
     useEffect(() => {
@@ -119,8 +119,44 @@ export function AdminDashboard({ darkMode, toggleDarkMode, onLogout }: AdminDash
                 ))}
             </div>
 
+            {/* Tabs */}
+            <div className="flex gap-2 mb-6">
+                <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setActiveTab('projects')}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${activeTab === 'projects'
+                            ? 'bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white shadow-lg shadow-[#ff6f0f]/30'
+                            : darkMode
+                                ? 'bg-white/5 text-gray-400 hover:bg-white/10'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                >
+                    <FolderKanban className="w-5 h-5" />
+                    Projects
+                </motion.button>
+                <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setActiveTab('team')}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${activeTab === 'team'
+                            ? 'bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white shadow-lg shadow-[#ff6f0f]/30'
+                            : darkMode
+                                ? 'bg-white/5 text-gray-400 hover:bg-white/10'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                >
+                    <UsersRound className="w-5 h-5" />
+                    Team
+                </motion.button>
+            </div>
+
             {/* Content */}
-            <ProjectsManager darkMode={darkMode} onRefresh={loadStats} />
+            {activeTab === 'projects' ? (
+                <ProjectsManager darkMode={darkMode} onRefresh={loadStats} />
+            ) : (
+                <TeamManager darkMode={darkMode} />
+            )}
         </div>
     );
 }

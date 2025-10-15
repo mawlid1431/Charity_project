@@ -120,6 +120,85 @@ export async function updateDonationStatus(id: string, status: 'pending' | 'comp
     return data as Donation;
 }
 
+// Team Members
+export async function getTeamMembers() {
+    const { data, error } = await supabase
+        .from('team_members')
+        .select('*')
+        .order('display_order', { ascending: true });
+
+    if (error) throw error;
+    return data.map(member => ({
+        id: member.id,
+        name: member.name,
+        role: member.role,
+        image: member.image,
+        displayOrder: member.display_order,
+        linkedinUrl: member.linkedin_url,
+        email: member.email
+    }));
+}
+
+export async function createTeamMember(member: {
+    name: string;
+    role: string;
+    image: string;
+    displayOrder: number;
+    linkedinUrl?: string;
+    email?: string;
+}) {
+    const { data, error } = await supabase
+        .from('team_members')
+        .insert({
+            name: member.name,
+            role: member.role,
+            image: member.image,
+            display_order: member.displayOrder,
+            linkedin_url: member.linkedinUrl,
+            email: member.email
+        })
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
+}
+
+export async function updateTeamMember(id: string, member: {
+    name: string;
+    role: string;
+    image: string;
+    displayOrder: number;
+    linkedinUrl?: string;
+    email?: string;
+}) {
+    const { data, error } = await supabase
+        .from('team_members')
+        .update({
+            name: member.name,
+            role: member.role,
+            image: member.image,
+            display_order: member.displayOrder,
+            linkedin_url: member.linkedinUrl,
+            email: member.email
+        })
+        .eq('id', id)
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
+}
+
+export async function deleteTeamMember(id: string) {
+    const { error } = await supabase
+        .from('team_members')
+        .delete()
+        .eq('id', id);
+
+    if (error) throw error;
+}
+
 // Dashboard Stats
 export async function getDashboardStats() {
     const { data: projects } = await supabase

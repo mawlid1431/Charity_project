@@ -39,63 +39,6 @@ export function ProjectsPage({ darkMode, onNavigate }: ProjectsPageProps) {
     }
   };
 
-  const fallbackProjects = [
-    {
-      id: '2',
-      title: 'Education for All',
-      description: 'Providing quality education and school supplies to underprivileged children across rural communities.',
-      image: 'https://images.unsplash.com/photo-1666281269793-da06484657e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGlsZHJlbiUyMGVkdWNhdGlvbiUyMGFmcmljYXxlbnwxfHx8fDE3NjAzODc4MTR8MA&ixlib=rb-4.1.0&q=80&w=1080',
-      progress: 75,
-      raised: '15,000',
-      goal: '20,000',
-    },
-    {
-      id: '4',
-      title: 'Community Support',
-      description: 'Supporting families in need with essential resources, food, and healthcare services.',
-      image: 'https://images.unsplash.com/photo-1697665387559-253e7a645e96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb21tdW5pdHklMjBoZWxwJTIwaGFuZHN8ZW58MXx8fHwxNzYwNDQ3Njg3fDA&ixlib=rb-4.1.0&q=80&w=1080',
-      progress: 60,
-      raised: '12,000',
-      goal: '20,000',
-    },
-    {
-      id: '1',
-      title: 'Clean Water Access',
-      description: 'Building wells and water infrastructure to provide clean drinking water to remote villages.',
-      image: 'https://images.unsplash.com/photo-1649518319696-7835249a7c72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMHdlbGwlMjBjb21tdW5pdHl8ZW58MXx8fHwxNzYwMzQ0OTI3fDA&ixlib=rb-4.1.0&q=80&w=1080',
-      progress: 45,
-      raised: '9,000',
-      goal: '20,000',
-    },
-    {
-      id: '5',
-      title: 'Food Distribution',
-      description: 'Providing nutritious meals and food packages to families facing food insecurity.',
-      image: 'https://images.unsplash.com/photo-1593113630400-ea4288922497?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmb29kJTIwZG9uYXRpb24lMjBjaGFyaXR5fGVufDF8fHx8MTc2MDM4MDY4OXww&ixlib=rb-4.1.0&q=80&w=1080',
-      progress: 82,
-      raised: '16,400',
-      goal: '20,000',
-    },
-    {
-      id: '3',
-      title: 'Healthcare Initiative',
-      description: 'Mobile health clinics providing free medical care and vaccinations to underserved areas.',
-      image: 'https://images.unsplash.com/photo-1653508310326-2482de0e96c3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBjaGFyaXR5JTIwd29ya2VyJTIwc21pbGluZ3xlbnwxfHx8fDE3NjA0NDgwODJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-      progress: 55,
-      raised: '11,000',
-      goal: '20,000',
-    },
-    {
-      id: '6',
-      title: 'Women Empowerment',
-      description: 'Vocational training and microfinance programs to help women achieve economic independence.',
-      image: 'https://images.unsplash.com/photo-1643214410415-de1976ad74ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYXBweSUyMHZvbHVudGVlciUyMGNvbW11bml0eXxlbnwxfHx8fDE3NjA0NDgwODJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-      progress: 68,
-      raised: '13,600',
-      goal: '20,000',
-    },
-  ];
-
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-[#0a1628]' : 'bg-white'}`}>
       {/* Header Section */}

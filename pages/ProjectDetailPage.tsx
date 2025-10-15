@@ -370,7 +370,7 @@ Your donation directly funds medical supplies, equipment, training, and infrastr
                                             <ExternalLink className="w-4 h-4" />
                                         </motion.a>
                                     ) : (
-                                        <DonationForm darkMode={darkMode} />
+                                        <DonationForm darkMode={darkMode} onNavigate={onNavigate} />
                                     )}
                                 </>
                             )}

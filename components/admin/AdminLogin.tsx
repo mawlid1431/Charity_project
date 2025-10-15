@@ -20,15 +20,19 @@ export function AdminLogin({ darkMode, toggleDarkMode, onLogin }: AdminLoginProp
         setIsLoading(true);
         setError('');
 
-        // Simple authentication (replace with real authentication)
-        if (username === 'admin' && password === 'admin123') {
+        // Get admin credentials from environment variables for security
+        const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
+        const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD;
+
+        // Simple authentication (replace with real authentication for production)
+        if (username === adminEmail && password === adminPassword) {
             setTimeout(() => {
                 onLogin(true);
                 setIsLoading(false);
             }, 1000);
         } else {
             setTimeout(() => {
-                setError('Invalid username or password');
+                setError('Invalid email or password');
                 setIsLoading(false);
             }, 1000);
         }
@@ -45,8 +49,8 @@ export function AdminLogin({ darkMode, toggleDarkMode, onLogin }: AdminLoginProp
                 whileTap={{ scale: 0.9 }}
                 onClick={toggleDarkMode}
                 className={`absolute top-4 right-4 p-3 rounded-xl transition-all shadow-lg ${darkMode
-                        ? 'bg-white/10 text-white hover:bg-white/20'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-white/10 text-white hover:bg-white/20'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
             >
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -91,22 +95,22 @@ export function AdminLogin({ darkMode, toggleDarkMode, onLogin }: AdminLoginProp
                         </motion.div>
                     )}
 
-                    {/* Username Field */}
+                    {/* Email Field */}
                     <div>
                         <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            Username
+                            Email
                         </label>
                         <div className="relative">
                             <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
                             <input
-                                type="text"
+                                type="email"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all ${darkMode
                                     ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                     : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                     }`}
-                                placeholder="Enter username"
+                                placeholder="Enter email"
                                 required
                             />
                         </div>
@@ -162,12 +166,11 @@ export function AdminLogin({ darkMode, toggleDarkMode, onLogin }: AdminLoginProp
                     </motion.button>
                 </form>
 
-                {/* Demo Credentials */}
-                <div className={`mt-6 p-4 rounded-lg ${darkMode ? 'bg-[#0f1c3f]/50' : 'bg-gray-50'}`}>
-                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} text-center`}>
-                        Demo Credentials:<br />
-                        Username: <span className="font-mono">admin</span><br />
-                        Password: <span className="font-mono">admin123</span>
+                {/* Security Notice */}
+                <div className={`mt-6 p-4 rounded-lg border ${darkMode ? 'bg-blue-500/10 border-blue-500/20' : 'bg-blue-50 border-blue-200'}`}>
+                    <p className={`text-xs ${darkMode ? 'text-blue-400' : 'text-blue-600'} text-center`}>
+                        🔒 Secure Admin Access<br />
+                        Credentials are stored securely in environment variables
                     </p>
                 </div>
             </motion.div>

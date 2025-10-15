@@ -12,28 +12,28 @@ export function ContactPage({ darkMode }: ContactPageProps) {
     {
       icon: Mail,
       title: 'Email Us',
-      content: 'info@mubarakcharity.org',
-      link: 'mailto:info@mubarakcharity.org',
+      content: 'Charitymubarak1@gmail.com',
+      link: 'mailto:Charitymubarak1@gmail.com',
       color: 'from-blue-500 to-cyan-500',
     },
     {
       icon: Phone,
       title: 'Call Us',
-      content: '+1 (555) 123-4567',
-      link: 'tel:+15551234567',
+      content: '+1 781-692-1308',
+      link: 'tel:+17816921308',
       color: 'from-green-500 to-emerald-500',
     },
     {
       icon: MapPin,
       title: 'Visit Us',
-      content: '123 Hope Street, City, State 12345',
-      link: '#',
+      content: 'Boston Road, MA, United States, Massachusetts',
+      link: 'https://maps.google.com/?q=Boston+Road+MA+Massachusetts',
       color: 'from-orange-500 to-red-500',
     },
     {
       icon: Clock,
       title: 'Office Hours',
-      content: 'Mon-Fri: 9AM-5PM, Sat: 10AM-2PM',
+      content: 'Morning: 9:00 AM - 12:00 PM | Afternoon: 4:00 PM - 5:30 PM',
       link: '#',
       color: 'from-purple-500 to-pink-500',
     },
@@ -70,7 +70,7 @@ export function ContactPage({ darkMode }: ContactPageProps) {
       {/* Header Section */}
       <section className={`relative py-32 overflow-hidden ${darkMode ? 'bg-gradient-to-r from-[#0f1c3f] to-[#1a2f5f]' : 'bg-gradient-to-r from-[#1a2f5f] to-[#2a4f7f]'}`}>
         <DecorativeElements />
-        
+
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -107,9 +107,8 @@ export function ContactPage({ darkMode }: ContactPageProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className={`block rounded-2xl p-6 ${
-                  darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
-                } shadow-lg hover:shadow-2xl transition-all cursor-pointer`}
+                className={`block rounded-2xl p-6 ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
+                  } shadow-lg hover:shadow-2xl transition-all cursor-pointer`}
               >
                 <div className={`w-14 h-14 rounded-xl bg-gradient-to-r ${method.color} flex items-center justify-center mb-4 text-white`}>
                   <method.icon className="w-7 h-7" />
@@ -139,9 +138,8 @@ export function ContactPage({ darkMode }: ContactPageProps) {
               <h2 className={`mb-6 ${darkMode ? 'text-white' : 'text-[#1a2f5f]'}`}>
                 Send Us a Message
               </h2>
-              <div className={`rounded-3xl p-8 ${
-                darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
-              } shadow-xl`}>
+              <div className={`rounded-3xl p-8 ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
+                } shadow-xl`}>
                 <ContactForm darkMode={darkMode} />
               </div>
             </motion.div>
@@ -184,9 +182,8 @@ export function ContactPage({ darkMode }: ContactPageProps) {
               </div>
 
               {/* Social Links */}
-              <div className={`rounded-2xl p-8 ${
-                darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
-              }`}>
+              <div className={`rounded-2xl p-8 ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
+                }`}>
                 <h3 className={`mb-4 ${darkMode ? 'text-white' : 'text-[#1a2f5f]'}`}>
                   Follow Us
                 </h3>
@@ -210,9 +207,8 @@ export function ContactPage({ darkMode }: ContactPageProps) {
               </div>
 
               {/* Office Info */}
-              <div className={`rounded-2xl p-8 ${
-                darkMode ? 'bg-gradient-to-br from-[#ff6f0f]/10 to-[#4a90e2]/10' : 'bg-gradient-to-br from-[#ff6f0f]/5 to-[#4a90e2]/5'
-              } border border-[#ff6f0f]/20`}>
+              <div className={`rounded-2xl p-8 ${darkMode ? 'bg-gradient-to-br from-[#ff6f0f]/10 to-[#4a90e2]/10' : 'bg-gradient-to-br from-[#ff6f0f]/5 to-[#4a90e2]/5'
+                } border border-[#ff6f0f]/20`}>
                 <h3 className={`mb-4 ${darkMode ? 'text-white' : 'text-[#1a2f5f]'}`}>
                   Quick Response Guarantee
                 </h3>
@@ -250,9 +246,8 @@ export function ContactPage({ darkMode }: ContactPageProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className={`rounded-2xl p-6 ${
-                  darkMode ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-100'
-                }`}
+                className={`rounded-2xl p-6 ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-100'
+                  }`}
               >
                 <h3 className={`mb-3 ${darkMode ? 'text-white' : 'text-[#1a2f5f]'}`}>
                   {faq.question}
@@ -273,9 +268,8 @@ export function ContactPage({ darkMode }: ContactPageProps) {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className={`rounded-3xl overflow-hidden h-96 ${
-              darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
-            } flex items-center justify-center`}
+            className={`rounded-3xl overflow-hidden h-96 ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
+              } flex items-center justify-center`}
           >
             <div className="text-center">
               <MapPin className={`w-16 h-16 mx-auto mb-4 ${darkMode ? 'text-white/40' : 'text-gray-400'}`} />
@@ -283,7 +277,7 @@ export function ContactPage({ darkMode }: ContactPageProps) {
                 Map Location Placeholder
               </p>
               <p className={`mt-2 ${darkMode ? 'text-white/40' : 'text-gray-400'}`}>
-                123 Hope Street, City, State 12345
+                Boston Road, MA, United States, Massachusetts
               </p>
             </div>
           </motion.div>
@@ -293,7 +287,7 @@ export function ContactPage({ darkMode }: ContactPageProps) {
       {/* CTA Section */}
       <section className={`py-20 relative overflow-hidden ${darkMode ? 'bg-gradient-to-r from-[#0f1c3f] to-[#1a2f5f]' : 'bg-gradient-to-r from-[#1a2f5f] to-[#2a4f7f]'}`}>
         <DecorativeElements />
-        
+
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
