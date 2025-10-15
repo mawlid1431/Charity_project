@@ -1,7 +1,9 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Filter, Search } from 'lucide-react';
+import { Filter, Search, Loader } from 'lucide-react';
 import { DecorativeElements } from '../components/DecorativeElements';
 import { ProjectCard } from '../components/ProjectCard';
+import { getActiveProjects } from '@/utils/supabase/helpers';
 
 interface ProjectsPageProps {
   darkMode: boolean;
@@ -9,7 +11,35 @@ interface ProjectsPageProps {
 }
 
 export function ProjectsPage({ darkMode, onNavigate }: ProjectsPageProps) {
-  const allProjects = [
+  const [allProjects, setAllProjects] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load projects from Supabase
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const loadProjects = async () => {
+    try {
+      const data = await getActiveProjects();
+      const formattedProjects = data.map(p => ({
+        id: p.id,
+        title: p.name,
+        description: p.description,
+        image: p.image,
+        progress: Math.round((Number(p.raised_amount) / Number(p.target_amount)) * 100),
+        raised: Number(p.raised_amount).toLocaleString(),
+        goal: Number(p.target_amount).toLocaleString(),
+      }));
+      setAllProjects(formattedProjects);
+    } catch (error) {
+      console.error('Error loading projects:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fallbackProjects = [
     {
       id: '2',
       title: 'Education for All',
@@ -139,15 +169,30 @@ export function ProjectsPage({ darkMode, onNavigate }: ProjectsPageProps) {
       <section className={`py-16 ${darkMode ? 'bg-[#0a1628]' : 'bg-white'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {allProjects.map((project, index) => (
-              <ProjectCard
-                key={project.id}
-                {...project}
-                darkMode={darkMode}
-                index={index}
-                onClick={() => onNavigate('project-detail', project.id)}
-              />
-            ))}
+            {loading ? (
+              <div className="col-span-full flex justify-center py-20">
+                <Loader className="w-12 h-12 animate-spin text-[#ff6f0f]" />
+              </div>
+            ) : allProjects.length === 0 ? (
+              <div className="col-span-full text-center py-20">
+                <p className={`text-xl ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  No active projects at the moment
+                </p>
+                <p className={`text-sm mt-2 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                  Check back soon for new projects!
+                </p>
+              </div>
+            ) : (
+              allProjects.map((project, index) => (
+                <ProjectCard
+                  key={project.id}
+                  {...project}
+                  darkMode={darkMode}
+                  index={index}
+                  onClick={() => onNavigate('project-detail', project.id)}
+                />
+              ))
+            )}
           </div>
         </div>
       </section>

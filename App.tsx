@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Toaster } from 'sonner';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { WhatsAppButton } from './components/WhatsAppButton';
@@ -53,6 +54,7 @@ function App({ initialPage = 'home' }: AppProps) {
 
   return (
     <div className={`min-h-screen transition-colors duration-500 ${darkMode ? 'bg-[#0a1628]' : 'bg-white'}`}>
+      <Toaster position="top-right" richColors />
       {currentPage !== 'admin' && (
         <Navbar
           darkMode={darkMode}

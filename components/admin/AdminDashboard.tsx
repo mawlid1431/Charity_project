@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { LogOut, BarChart3, Users, DollarSign, Target, Sun, Moon } from 'lucide-react';
 import { ProjectsManager } from './ProjectsManager';
 import { DonationsManager } from './DonationsManager';
+import { getDashboardStats } from '@/utils/supabase/helpers';
 
 interface AdminDashboardProps {
     darkMode: boolean;
@@ -12,18 +13,36 @@ interface AdminDashboardProps {
 
 export function AdminDashboard({ darkMode, toggleDarkMode, onLogout }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState('projects');
+    const [stats, setStats] = useState([
+        { name: 'Total Projects', value: '0', icon: Target, color: 'from-blue-500 to-blue-600' },
+        { name: 'Total Raised', value: '$0', icon: DollarSign, color: 'from-green-500 to-green-600' },
+        { name: 'Total Donations', value: '0', icon: Users, color: 'from-purple-500 to-purple-600' },
+        { name: 'Success Rate', value: '0%', icon: BarChart3, color: 'from-orange-500 to-orange-600' },
+    ]);
 
     const tabs = [
         { id: 'projects', name: 'Projects', icon: Target },
         { id: 'donations', name: 'Donations', icon: DollarSign },
     ];
 
-    const stats = [
-        { name: 'Total Projects', value: '12', icon: Target, color: 'from-blue-500 to-blue-600' },
-        { name: 'Active Donations', value: '$45,230', icon: DollarSign, color: 'from-green-500 to-green-600' },
-        { name: 'Total Donors', value: '1,234', icon: Users, color: 'from-purple-500 to-purple-600' },
-        { name: 'Success Rate', value: '94%', icon: BarChart3, color: 'from-orange-500 to-orange-600' },
-    ];
+    // Load dashboard stats
+    useEffect(() => {
+        loadStats();
+    }, []);
+
+    const loadStats = async () => {
+        try {
+            const data = await getDashboardStats();
+            setStats([
+                { name: 'Active Projects', value: data.activeProjects.toString(), icon: Target, color: 'from-blue-500 to-blue-600' },
+                { name: 'Total Raised', value: `$${data.totalRaised.toLocaleString()}`, icon: DollarSign, color: 'from-green-500 to-green-600' },
+                { name: 'Total Donations', value: data.totalDonations.toString(), icon: Users, color: 'from-purple-500 to-purple-600' },
+                { name: 'Success Rate', value: `${data.successRate}%`, icon: BarChart3, color: 'from-orange-500 to-orange-600' },
+            ]);
+        } catch (error) {
+            console.error('Error loading stats:', error);
+        }
+    };
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

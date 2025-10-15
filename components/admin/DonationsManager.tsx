@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Search, Filter, Download, Eye, Calendar, DollarSign, User } from 'lucide-react';
+import { Search, Filter, Download, Eye, Calendar, DollarSign, User, Loader } from 'lucide-react';
+import { getDonations } from '@/utils/supabase/helpers';
 
 interface Donation {
     id: string;
@@ -18,51 +19,37 @@ interface DonationsManagerProps {
 }
 
 export function DonationsManager({ darkMode }: DonationsManagerProps) {
-    const [donations] = useState<Donation[]>([
-        {
-            id: '1',
-            donorName: 'John Smith',
-            donorEmail: 'john@example.com',
-            amount: 500,
-            projectName: 'Clean Water Initiative',
-            date: '2024-01-15',
-            status: 'completed',
-            paymentMethod: 'Credit Card'
-        },
-        {
-            id: '2',
-            donorName: 'Sarah Johnson',
-            donorEmail: 'sarah@example.com',
-            amount: 250,
-            projectName: 'Education for All',
-            date: '2024-01-14',
-            status: 'completed',
-            paymentMethod: 'PayPal'
-        },
-        {
-            id: '3',
-            donorName: 'Mike Wilson',
-            donorEmail: 'mike@example.com',
-            amount: 1000,
-            projectName: 'Healthcare Support',
-            date: '2024-01-13',
-            status: 'pending',
-            paymentMethod: 'Bank Transfer'
-        },
-        {
-            id: '4',
-            donorName: 'Emily Davis',
-            donorEmail: 'emily@example.com',
-            amount: 150,
-            projectName: 'Clean Water Initiative',
-            date: '2024-01-12',
-            status: 'failed',
-            paymentMethod: 'Credit Card'
-        }
-    ]);
-
+    const [donations, setDonations] = useState<Donation[]>([]);
+    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+
+    // Load donations from Supabase
+    useEffect(() => {
+        loadDonations();
+    }, []);
+
+    const loadDonations = async () => {
+        try {
+            setLoading(true);
+            const data = await getDonations();
+            const formattedDonations = data.map((d: any) => ({
+                id: d.id,
+                donorName: d.donor_name,
+                donorEmail: d.donor_email,
+                amount: Number(d.amount),
+                projectName: d.projects?.name || 'General Donation',
+                date: d.created_at.split('T')[0],
+                status: d.payment_status,
+                paymentMethod: d.payment_method
+            }));
+            setDonations(formattedDonations);
+        } catch (error) {
+            console.error('Error loading donations:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const filteredDonations = donations.filter(donation => {
         const matchesSearch = donation.donorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -103,8 +90,8 @@ export function DonationsManager({ darkMode }: DonationsManagerProps) {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${darkMode
-                            ? 'bg-[#ff6f0f]/10 text-[#ff6f0f] hover:bg-[#ff6f0f]/20 border border-[#ff6f0f]/20'
-                            : 'bg-[#ff6f0f]/10 text-[#ff6f0f] hover:bg-[#ff6f0f]/20 border border-[#ff6f0f]/20'
+                        ? 'bg-[#ff6f0f]/10 text-[#ff6f0f] hover:bg-[#ff6f0f]/20 border border-[#ff6f0f]/20'
+                        : 'bg-[#ff6f0f]/10 text-[#ff6f0f] hover:bg-[#ff6f0f]/20 border border-[#ff6f0f]/20'
                         }`}
                 >
                     <Download className="w-4 h-4" />
@@ -123,8 +110,8 @@ export function DonationsManager({ darkMode }: DonationsManagerProps) {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Search donations..."
                         className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all ${darkMode
-                                ? 'bg-[#1a2f5f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                            ? 'bg-[#1a2f5f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                            : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                             }`}
                     />
                 </div>
@@ -136,8 +123,8 @@ export function DonationsManager({ darkMode }: DonationsManagerProps) {
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                         className={`pl-10 pr-8 py-3 rounded-lg border transition-all ${darkMode
-                                ? 'bg-[#1a2f5f] border-white/10 text-white focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                : 'bg-white border-gray-300 text-gray-900 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                            ? 'bg-[#1a2f5f] border-white/10 text-white focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                            : 'bg-white border-gray-300 text-gray-900 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                             }`}
                     >
                         <option value="all">All Status</option>
@@ -186,7 +173,13 @@ export function DonationsManager({ darkMode }: DonationsManagerProps) {
                             </tr>
                         </thead>
                         <tbody className={`divide-y ${darkMode ? 'divide-white/10' : 'divide-gray-200'}`}>
-                            {filteredDonations.map((donation, index) => (
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={7} className="px-6 py-12 text-center">
+                                        <Loader className="w-8 h-8 animate-spin text-[#ff6f0f] mx-auto" />
+                                    </td>
+                                </tr>
+                            ) : filteredDonations.map((donation, index) => (
                                 <motion.tr
                                     key={donation.id}
                                     initial={{ opacity: 0, y: 20 }}
@@ -236,8 +229,8 @@ export function DonationsManager({ darkMode }: DonationsManagerProps) {
                                             whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
                                             className={`flex items-center gap-1 px-3 py-1 rounded-lg transition-all ${darkMode
-                                                    ? 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20'
-                                                    : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                                                ? 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20'
+                                                : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
                                                 }`}
                                         >
                                             <Eye className="w-4 h-4" />

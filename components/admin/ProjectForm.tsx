@@ -1,101 +1,146 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { X, DollarSign, FileText, Image, Camera } from 'lucide-react';
+import { X, Save, Image as ImageIcon, MapPin, Calendar, FileText, DollarSign, Activity, Upload, Loader } from 'lucide-react';
+import { supabase } from '@/utils/supabase/client';
 
 interface Project {
     id: string;
     name: string;
+    location: string;
+    date: string;
     description: string;
     image: string;
     targetAmount: number;
     raisedAmount: number;
     status: 'active' | 'completed' | 'paused';
-    createdAt: string;
 }
 
 interface ProjectFormProps {
     darkMode: boolean;
-    project?: Project | null;
+    project: Project | null;
     onSave: (project: Omit<Project, 'id' | 'createdAt'>) => void;
     onCancel: () => void;
 }
 
 export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectFormProps) {
     const [formData, setFormData] = useState({
-        name: project?.name || '',
-        description: project?.description || '',
-        image: project?.image || '',
-        targetAmount: project?.targetAmount || 0,
-        raisedAmount: project?.raisedAmount || 0,
-        status: project?.status || 'active' as const
+        name: '',
+        location: '',
+        date: '',
+        description: '',
+        image: '',
+        targetAmount: 0,
+        raisedAmount: 0,
+        status: 'active' as 'active' | 'completed' | 'paused'
     });
 
-    const [errors, setErrors] = useState<Record<string, string>>({});
-    const [imagePreview, setImagePreview] = useState<string>(project?.image || '');
-    const [, setImageFile] = useState<File | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [uploading, setUploading] = useState(false);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string>('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    useEffect(() => {
+        if (project) {
+            setFormData({
+                name: project.name,
+                location: project.location || '',
+                date: project.date || '',
+                description: project.description,
+                image: project.image,
+                targetAmount: project.targetAmount,
+                raisedAmount: project.raisedAmount,
+                status: project.status
+            });
+            setImagePreview(project.image);
+        }
+    }, [project]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Validation
-        const newErrors: Record<string, string> = {};
-        if (!formData.name.trim()) newErrors.name = 'Project name is required';
-        if (!formData.description.trim()) newErrors.description = 'Description is required';
-        if (formData.targetAmount <= 0) newErrors.targetAmount = 'Target amount must be greater than 0';
-        if (formData.raisedAmount < 0) newErrors.raisedAmount = 'Raised amount cannot be negative';
-
-        setErrors(newErrors);
-
-        if (Object.keys(newErrors).length === 0) {
-            onSave(formData);
+        // If there's a new image file, upload it first
+        if (imageFile) {
+            setUploading(true);
+            const imageUrl = await uploadImage(imageFile);
+            if (imageUrl) {
+                formData.image = imageUrl;
+            }
+            setUploading(false);
         }
+
+        onSave(formData);
     };
 
-    const handleInputChange = (field: string, value: any) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
-        if (errors[field]) {
-            setErrors(prev => ({ ...prev, [field]: '' }));
-        }
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: name === 'targetAmount' || name === 'raisedAmount' ? parseFloat(value) || 0 : value
+        }));
     };
 
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             // Validate file type
             if (!file.type.startsWith('image/')) {
-                setErrors(prev => ({ ...prev, image: 'Please select a valid image file' }));
+                alert('Please select an image file');
                 return;
             }
 
             // Validate file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
-                setErrors(prev => ({ ...prev, image: 'Image size must be less than 5MB' }));
+                alert('Image size should be less than 5MB');
                 return;
             }
 
             setImageFile(file);
 
-            // Create preview URL
+            // Create preview
             const reader = new FileReader();
-            reader.onload = (e) => {
-                const result = e.target?.result as string;
-                setImagePreview(result);
-                handleInputChange('image', result);
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
             };
             reader.readAsDataURL(file);
-
-            // Clear any previous errors
-            if (errors.image) {
-                setErrors(prev => ({ ...prev, image: '' }));
-            }
         }
     };
 
-    const handleImageUrlChange = (url: string) => {
-        setImagePreview(url);
+    const uploadImage = async (file: File): Promise<string | null> => {
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+            const filePath = `projects/${fileName}`;
+
+            // Upload to Supabase Storage
+            const { data, error } = await supabase.storage
+                .from('project-images')
+                .upload(filePath, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+
+            if (error) {
+                console.error('Upload error:', error);
+                alert('Failed to upload image. Please try again.');
+                return null;
+            }
+
+            // Get public URL
+            const { data: { publicUrl } } = supabase.storage
+                .from('project-images')
+                .getPublicUrl(filePath);
+
+            return publicUrl;
+        } catch (error) {
+            console.error('Upload error:', error);
+            alert('Failed to upload image. Please try again.');
+            return null;
+        }
+    };
+
+    const removeImage = () => {
         setImageFile(null);
-        handleInputChange('image', url);
+        setImagePreview('');
+        setFormData(prev => ({ ...prev, image: '' }));
     };
 
     return (
@@ -103,218 +148,250 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-            onClick={(e) => e.target === e.currentTarget && onCancel()}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={onCancel}
         >
             <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className={`w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl ${darkMode ? 'bg-[#1a2f5f] border border-white/10' : 'bg-white border border-gray-200'
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
+                className={`w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl ${darkMode ? 'bg-[#1a2f5f] border border-white/10' : 'bg-white border border-gray-200'
                     }`}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-gray-200/20">
-                    <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                <div className={`sticky top-0 z-10 flex justify-between items-center p-6 border-b ${darkMode ? 'bg-[#1a2f5f] border-white/10' : 'bg-white border-gray-200'
+                    }`}>
+                    <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         {project ? 'Edit Project' : 'Add New Project'}
                     </h2>
-                    <button
+                    <motion.button
+                        whileHover={{ scale: 1.1, rotate: 90 }}
+                        whileTap={{ scale: 0.9 }}
                         onClick={onCancel}
                         className={`p-2 rounded-lg transition-all ${darkMode ? 'hover:bg-white/10 text-gray-400' : 'hover:bg-gray-100 text-gray-600'
                             }`}
                     >
-                        <X className="w-5 h-5" />
-                    </button>
+                        <X className="w-6 h-6" />
+                    </motion.button>
                 </div>
 
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
                     {/* Project Name */}
                     <div>
-                        <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                        <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                            }`}>
+                            <FileText className="w-4 h-4" />
                             Project Name *
                         </label>
-                        <div className="relative">
-                            <FileText className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
-                            <input
-                                type="text"
-                                value={formData.name}
-                                onChange={(e) => handleInputChange('name', e.target.value)}
-                                className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all ${errors.name
-                                    ? 'border-red-500 focus:ring-red-500/20'
-                                    : darkMode
-                                        ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                    }`}
-                                placeholder="Enter project name"
-                            />
-                        </div>
-                        {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                        <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            placeholder="Enter project name"
+                            className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
+                                ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                }`}
+                        />
+                    </div>
+
+                    {/* Location */}
+                    <div>
+                        <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                            }`}>
+                            <MapPin className="w-4 h-4" />
+                            Location *
+                        </label>
+                        <input
+                            type="text"
+                            name="location"
+                            value={formData.location}
+                            onChange={handleChange}
+                            required
+                            placeholder="Enter project location"
+                            className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
+                                ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                }`}
+                        />
+                    </div>
+
+                    {/* Date */}
+                    <div>
+                        <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                            }`}>
+                            <Calendar className="w-4 h-4" />
+                            Start Date *
+                        </label>
+                        <input
+                            type="date"
+                            name="date"
+                            value={formData.date}
+                            onChange={handleChange}
+                            required
+                            className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
+                                ? 'bg-[#0f1c3f] border-white/10 text-white focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                : 'bg-white border-gray-300 text-gray-900 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                }`}
+                        />
                     </div>
 
                     {/* Description */}
                     <div>
-                        <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                        <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                            }`}>
+                            <FileText className="w-4 h-4" />
                             Description *
                         </label>
                         <textarea
+                            name="description"
                             value={formData.description}
-                            onChange={(e) => handleInputChange('description', e.target.value)}
+                            onChange={handleChange}
+                            required
                             rows={4}
-                            className={`w-full px-4 py-3 rounded-lg border transition-all resize-none ${errors.description
-                                ? 'border-red-500 focus:ring-red-500/20'
-                                : darkMode
-                                    ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                }`}
                             placeholder="Enter project description"
+                            className={`w-full px-4 py-3 rounded-lg border transition-all resize-none ${darkMode
+                                ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                }`}
                         />
-                        {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
                     </div>
 
                     {/* Image Upload */}
                     <div>
-                        <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            Project Image
+                        <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                            }`}>
+                            <ImageIcon className="w-4 h-4" />
+                            Project Image *
                         </label>
 
+                        {/* Upload Button */}
+                        <div className="space-y-3">
+                            <label className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 border-dashed cursor-pointer transition-all ${darkMode
+                                ? 'bg-[#0f1c3f] border-white/20 hover:border-[#ff6f0f] hover:bg-[#0f1c3f]/80'
+                                : 'bg-gray-50 border-gray-300 hover:border-[#ff6f0f] hover:bg-gray-100'
+                                }`}>
+                                <Upload className="w-5 h-5 text-[#ff6f0f]" />
+                                <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                    {imageFile ? imageFile.name : 'Click to upload image'}
+                                </span>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    className="hidden"
+                                />
+                            </label>
+
+                            <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                Supported: JPG, PNG, GIF (Max 5MB)
+                            </p>
+                        </div>
+
                         {/* Image Preview */}
-                        {imagePreview && (
-                            <div className="mb-4">
-                                <div className={`relative w-full h-48 rounded-lg overflow-hidden border-2 border-dashed ${darkMode ? 'border-white/20' : 'border-gray-300'
-                                    }`}>
-                                    <img
-                                        src={imagePreview}
-                                        alt="Project preview"
-                                        className="w-full h-full object-cover"
-                                    />
-                                    <button
+                        {(imagePreview || formData.image) && (
+                            <div className="mt-3">
+                                <div className="flex items-center justify-between mb-2">
+                                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                        Image Preview:
+                                    </p>
+                                    <motion.button
                                         type="button"
-                                        onClick={() => {
-                                            setImagePreview('');
-                                            setImageFile(null);
-                                            handleInputChange('image', '');
-                                            if (fileInputRef.current) fileInputRef.current.value = '';
-                                        }}
-                                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={removeImage}
+                                        className={`text-xs px-2 py-1 rounded transition-all ${darkMode
+                                            ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20'
+                                            : 'bg-red-50 text-red-600 hover:bg-red-100'
+                                            }`}
                                     >
-                                        <X className="w-4 h-4" />
-                                    </button>
+                                        Remove
+                                    </motion.button>
+                                </div>
+                                <div className="relative">
+                                    <img
+                                        src={imagePreview || formData.image}
+                                        alt="Preview"
+                                        className="w-full h-48 object-cover rounded-lg"
+                                        onError={(e) => {
+                                            e.currentTarget.src = 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=800';
+                                        }}
+                                    />
+                                    {uploading && (
+                                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
+                                            <Loader className="w-8 h-8 text-white animate-spin" />
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )}
-
-                        {/* Upload Options */}
-                        <div className="space-y-4">
-                            {/* File Upload */}
-                            <div>
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                    className="hidden"
-                                />
-                                <motion.button
-                                    type="button"
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    onClick={() => fileInputRef.current?.click()}
-                                    className={`w-full flex items-center justify-center gap-3 py-4 px-4 rounded-lg border-2 border-dashed transition-all ${darkMode
-                                        ? 'border-white/20 hover:border-[#ff6f0f]/50 bg-[#0f1c3f] text-gray-300 hover:text-white'
-                                        : 'border-gray-300 hover:border-[#ff6f0f]/50 bg-gray-50 text-gray-600 hover:text-gray-900'
-                                        }`}
-                                >
-                                    <Camera className="w-6 h-6" />
-                                    <div className="text-center">
-                                        <p className="font-medium">Upload Image from Device</p>
-                                        <p className="text-sm opacity-75">PNG, JPG, GIF up to 5MB</p>
-                                    </div>
-                                </motion.button>
-                            </div>
-
-                            {/* URL Input */}
-                            <div className="relative">
-                                <div className={`text-center text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'} mb-2`}>
-                                    OR
-                                </div>
-                                <Image className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
-                                <input
-                                    type="url"
-                                    value={formData.image}
-                                    onChange={(e) => handleImageUrlChange(e.target.value)}
-                                    className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all ${darkMode
-                                        ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                        }`}
-                                    placeholder="Or paste image URL here..."
-                                />
-                            </div>
-                        </div>
-                        {errors.image && <p className="text-red-500 text-sm mt-1">{errors.image}</p>}
                     </div>
 
-                    {/* Amount Fields */}
+                    {/* Amounts Row */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Target Amount */}
                         <div>
-                            <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                            <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                                }`}>
+                                <DollarSign className="w-4 h-4" />
                                 Target Amount ($) *
                             </label>
-                            <div className="relative">
-                                <DollarSign className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
-                                <input
-                                    type="number"
-                                    min="0"
-                                    step="100"
-                                    value={formData.targetAmount}
-                                    onChange={(e) => handleInputChange('targetAmount', parseInt(e.target.value) || 0)}
-                                    className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all ${errors.targetAmount
-                                        ? 'border-red-500 focus:ring-red-500/20'
-                                        : darkMode
-                                            ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                            : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                        }`}
-                                    placeholder="50000"
-                                />
-                            </div>
-                            {errors.targetAmount && <p className="text-red-500 text-sm mt-1">{errors.targetAmount}</p>}
+                            <input
+                                type="number"
+                                name="targetAmount"
+                                value={formData.targetAmount}
+                                onChange={handleChange}
+                                required
+                                min="0"
+                                step="100"
+                                placeholder="50000"
+                                className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
+                                    ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                    }`}
+                            />
                         </div>
 
                         {/* Raised Amount */}
                         <div>
-                            <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                                Raised Amount ($)
+                            <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                                }`}>
+                                <DollarSign className="w-4 h-4" />
+                                Raised Amount ($) *
                             </label>
-                            <div className="relative">
-                                <DollarSign className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
-                                <input
-                                    type="number"
-                                    min="0"
-                                    step="100"
-                                    value={formData.raisedAmount}
-                                    onChange={(e) => handleInputChange('raisedAmount', parseInt(e.target.value) || 0)}
-                                    className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all ${errors.raisedAmount
-                                        ? 'border-red-500 focus:ring-red-500/20'
-                                        : darkMode
-                                            ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                            : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                        }`}
-                                    placeholder="25000"
-                                />
-                            </div>
-                            {errors.raisedAmount && <p className="text-red-500 text-sm mt-1">{errors.raisedAmount}</p>}
+                            <input
+                                type="number"
+                                name="raisedAmount"
+                                value={formData.raisedAmount}
+                                onChange={handleChange}
+                                required
+                                min="0"
+                                step="100"
+                                placeholder="15000"
+                                className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
+                                    ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                    }`}
+                            />
                         </div>
                     </div>
 
                     {/* Status */}
                     <div>
-                        <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            Status
+                        <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                            }`}>
+                            <Activity className="w-4 h-4" />
+                            Status *
                         </label>
                         <select
+                            name="status"
                             value={formData.status}
-                            onChange={(e) => handleInputChange('status', e.target.value)}
+                            onChange={handleChange}
+                            required
                             className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
                                 ? 'bg-[#0f1c3f] border-white/10 text-white focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                 : 'bg-white border-gray-300 text-gray-900 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
@@ -324,29 +401,68 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                             <option value="paused">Paused</option>
                             <option value="completed">Completed</option>
                         </select>
+                        <p className={`text-xs mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                            Active: Accepting donations | Paused: Temporarily stopped | Completed: Goal reached
+                        </p>
                     </div>
 
-                    {/* Actions */}
-                    <div className="flex gap-4 pt-4">
+                    {/* Progress Preview */}
+                    {formData.targetAmount > 0 && (
+                        <div className={`p-4 rounded-lg ${darkMode ? 'bg-[#0f1c3f] border border-white/10' : 'bg-gray-50 border border-gray-200'
+                            }`}>
+                            <p className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                Progress Preview
+                            </p>
+                            <div className="flex justify-between items-center mb-2">
+                                <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                    ${formData.raisedAmount.toLocaleString()} raised
+                                </span>
+                                <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                    {((formData.raisedAmount / formData.targetAmount) * 100).toFixed(1)}%
+                                </span>
+                            </div>
+                            <div className={`w-full h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                                <div
+                                    className="h-2 bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] rounded-full transition-all"
+                                    style={{ width: `${Math.min((formData.raisedAmount / formData.targetAmount) * 100, 100)}%` }}
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-3 pt-4">
                         <motion.button
                             type="button"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={onCancel}
-                            className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all ${darkMode
-                                ? 'bg-gray-600 text-white hover:bg-gray-700'
-                                : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                            className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all ${darkMode
+                                ? 'bg-white/10 text-white hover:bg-white/20 border border-white/10'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
                                 }`}
                         >
                             Cancel
                         </motion.button>
                         <motion.button
                             type="submit"
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="flex-1 py-3 px-4 bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white rounded-lg font-medium shadow-lg shadow-[#ff6f0f]/30 hover:shadow-xl hover:shadow-[#ff6f0f]/40 transition-all"
+                            disabled={uploading}
+                            whileHover={{ scale: uploading ? 1 : 1.02 }}
+                            whileTap={{ scale: uploading ? 1 : 0.98 }}
+                            className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white rounded-lg font-medium shadow-lg shadow-[#ff6f0f]/30 hover:shadow-xl hover:shadow-[#ff6f0f]/40 transition-all ${uploading ? 'opacity-50 cursor-not-allowed' : ''
+                                }`}
                         >
-                            {project ? 'Update Project' : 'Create Project'}
+                            {uploading ? (
+                                <>
+                                    <Loader className="w-5 h-5 animate-spin" />
+                                    Uploading...
+                                </>
+                            ) : (
+                                <>
+                                    <Save className="w-5 h-5" />
+                                    {project ? 'Update Project' : 'Create Project'}
+                                </>
+                            )}
                         </motion.button>
                     </div>
                 </form>

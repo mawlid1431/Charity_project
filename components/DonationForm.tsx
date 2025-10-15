@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Heart, Check } from 'lucide-react';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { createDonation } from '@/utils/supabase/helpers';
+import { toast } from 'sonner';
 
 interface DonationFormProps {
   darkMode: boolean;
@@ -24,30 +25,24 @@ export function DonationForm({ darkMode }: DonationFormProps) {
 
     const amount = selectedAmount || parseFloat(customAmount) || 0;
 
-    try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-7613194e/donate`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${publicAnonKey}`,
-          },
-          body: JSON.stringify({
-            name,
-            email,
-            amount,
-            frequency,
-            timestamp: new Date().toISOString(),
-          }),
-        }
-      );
+    if (amount <= 0) {
+      alert('Please enter a valid donation amount');
+      setIsSubmitting(false);
+      return;
+    }
 
-      if (!response.ok) {
-        const error = await response.text();
-        console.error('Donation submission error:', error);
-        throw new Error('Failed to submit donation');
-      }
+    try {
+      await createDonation({
+        donor_name: name,
+        donor_email: email,
+        amount: amount,
+        payment_method: 'online',
+        payment_status: 'completed',
+        project_id: null, // General donation
+        donor_phone: null,
+        message: frequency === 'monthly' ? 'Monthly recurring donation' : null,
+        transaction_id: `TXN-${Date.now()}`
+      });
 
       setShowSuccess(true);
       setTimeout(() => {
@@ -101,26 +96,24 @@ export function DonationForm({ darkMode }: DonationFormProps) {
           <button
             type="button"
             onClick={() => setFrequency('once')}
-            className={`flex-1 py-3 rounded-lg transition-all ${
-              frequency === 'once'
-                ? 'bg-[#ff6f0f] text-white'
-                : darkMode
+            className={`flex-1 py-3 rounded-lg transition-all ${frequency === 'once'
+              ? 'bg-[#ff6f0f] text-white'
+              : darkMode
                 ? 'bg-white/5 text-white hover:bg-white/10'
                 : 'bg-black/5 text-black hover:bg-black/10'
-            }`}
+              }`}
           >
             One-time
           </button>
           <button
             type="button"
             onClick={() => setFrequency('monthly')}
-            className={`flex-1 py-3 rounded-lg transition-all ${
-              frequency === 'monthly'
-                ? 'bg-[#ff6f0f] text-white'
-                : darkMode
+            className={`flex-1 py-3 rounded-lg transition-all ${frequency === 'monthly'
+              ? 'bg-[#ff6f0f] text-white'
+              : darkMode
                 ? 'bg-white/5 text-white hover:bg-white/10'
                 : 'bg-black/5 text-black hover:bg-black/10'
-            }`}
+              }`}
           >
             Monthly
           </button>
@@ -142,13 +135,12 @@ export function DonationForm({ darkMode }: DonationFormProps) {
                   setSelectedAmount(amount);
                   setCustomAmount('');
                 }}
-                className={`py-3 rounded-lg transition-all ${
-                  selectedAmount === amount
-                    ? 'bg-[#ff6f0f] text-white shadow-lg shadow-[#ff6f0f]/30'
-                    : darkMode
+                className={`py-3 rounded-lg transition-all ${selectedAmount === amount
+                  ? 'bg-[#ff6f0f] text-white shadow-lg shadow-[#ff6f0f]/30'
+                  : darkMode
                     ? 'bg-white/5 text-white hover:bg-white/10'
                     : 'bg-black/5 text-black hover:bg-black/10'
-                }`}
+                  }`}
               >
                 ${amount}
               </motion.button>
@@ -169,11 +161,10 @@ export function DonationForm({ darkMode }: DonationFormProps) {
               setSelectedAmount(null);
             }}
             placeholder="Enter custom amount"
-            className={`w-full px-4 py-3 rounded-lg border ${
-              darkMode
-                ? 'bg-white/5 border-white/10 text-white placeholder:text-white/40'
-                : 'bg-white border-black/10 text-black placeholder:text-black/40'
-            } focus:outline-none focus:ring-2 focus:ring-[#ff6f0f]`}
+            className={`w-full px-4 py-3 rounded-lg border ${darkMode
+              ? 'bg-white/5 border-white/10 text-white placeholder:text-white/40'
+              : 'bg-white border-black/10 text-black placeholder:text-black/40'
+              } focus:outline-none focus:ring-2 focus:ring-[#ff6f0f]`}
           />
         </div>
 
@@ -187,11 +178,10 @@ export function DonationForm({ darkMode }: DonationFormProps) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className={`w-full px-4 py-3 rounded-lg border ${
-              darkMode
-                ? 'bg-white/5 border-white/10 text-white placeholder:text-white/40'
-                : 'bg-white border-black/10 text-black placeholder:text-black/40'
-            } focus:outline-none focus:ring-2 focus:ring-[#ff6f0f]`}
+            className={`w-full px-4 py-3 rounded-lg border ${darkMode
+              ? 'bg-white/5 border-white/10 text-white placeholder:text-white/40'
+              : 'bg-white border-black/10 text-black placeholder:text-black/40'
+              } focus:outline-none focus:ring-2 focus:ring-[#ff6f0f]`}
             placeholder="John Doe"
           />
         </div>
@@ -206,11 +196,10 @@ export function DonationForm({ darkMode }: DonationFormProps) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className={`w-full px-4 py-3 rounded-lg border ${
-              darkMode
-                ? 'bg-white/5 border-white/10 text-white placeholder:text-white/40'
-                : 'bg-white border-black/10 text-black placeholder:text-black/40'
-            } focus:outline-none focus:ring-2 focus:ring-[#ff6f0f]`}
+            className={`w-full px-4 py-3 rounded-lg border ${darkMode
+              ? 'bg-white/5 border-white/10 text-white placeholder:text-white/40'
+              : 'bg-white border-black/10 text-black placeholder:text-black/40'
+              } focus:outline-none focus:ring-2 focus:ring-[#ff6f0f]`}
             placeholder="john@example.com"
           />
         </div>
