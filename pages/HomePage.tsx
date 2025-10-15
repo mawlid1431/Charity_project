@@ -50,11 +50,13 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
       setLoading(false);
     }
   };
-  // Hero slider images - 3 different charity images that transition smoothly
+  // Hero slider images - 5 different charity images that transition smoothly
   const heroImages = [
-    'https://images.unsplash.com/photo-1653508311027-6765ae757c40?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGFyaXR5JTIwaGVscGluZyUyMGNoaWxkcmVuJTIwZWR1Y2F0aW9ufGVufDF8fHx8MTc2MDQ2NjA4NXww&ixlib=rb-4.1.0&q=80&w=1080',
-    'https://images.unsplash.com/photo-1631295161934-ec6c829d282a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb21tdW5pdHklMjBzdXBwb3J0JTIwaGFuZHMlMjB0b2dldGhlcnxlbnwxfHx8fDE3NjA0MDI4MzZ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    'https://images.unsplash.com/photo-1641569707854-c80945fb4719?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxodW1hbml0YXJpYW4lMjBhaWQlMjB2b2x1bnRlZXJzfGVufDF8fHx8MTc2MDQ2NjA4Nnww&ixlib=rb-4.1.0&q=80&w=1080',
+    '/carousel-1.jpg',
+    '/carousel-2.jpg',
+    '/carousel-3.jpg',
+    '/carousel-4.jpg',
+    '/carousel-5.jpg',
   ];
 
 
