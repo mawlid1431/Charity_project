@@ -11,6 +11,7 @@ interface ProjectCardProps {
   goal?: string;
   darkMode: boolean;
   index: number;
+  onClick?: () => void;
 }
 
 export function ProjectCard({
@@ -21,7 +22,8 @@ export function ProjectCard({
   raised,
   goal,
   darkMode,
-  index
+  index,
+  onClick
 }: ProjectCardProps) {
   return (
     <motion.div
@@ -30,9 +32,10 @@ export function ProjectCard({
       viewport={{ once: true, margin: '-100px' }}
       transition={{ delay: index * 0.1, duration: 0.6, ease: 'easeOut' }}
       whileHover={{ y: -15, scale: 1.02 }}
-      className={`group rounded-3xl overflow-hidden shadow-xl ${
-        darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
-      } hover:shadow-2xl transition-all duration-500`}
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
+      className={`group rounded-3xl overflow-hidden shadow-xl ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
+        } hover:shadow-2xl transition-all duration-500 ${onClick ? 'cursor-pointer' : ''}`}
     >
       <div className="relative h-72 overflow-hidden">
         {/* Image with overlay gradient */}
@@ -47,10 +50,10 @@ export function ProjectCard({
             className="w-full h-full object-cover"
           />
         </motion.div>
-        
+
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-70 group-hover:opacity-60 transition-opacity" />
-        
+
         {/* Progress badge on image */}
         {progress !== undefined && (
           <motion.div
@@ -86,7 +89,7 @@ export function ProjectCard({
                 <p className={`${darkMode ? 'text-white' : 'text-gray-900'}`}>${goal}</p>
               </div>
             </div>
-            
+
             {/* Progress bar with gradient */}
             <div className={`w-full h-3 rounded-full overflow-hidden ${darkMode ? 'bg-white/10' : 'bg-gray-200'}`}>
               <motion.div
@@ -117,6 +120,10 @@ export function ProjectCard({
         <motion.button
           whileHover={{ scale: 1.03, x: 5 }}
           whileTap={{ scale: 0.98 }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick?.();
+          }}
           className="w-full bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] hover:from-[#ff8f3f] hover:to-[#ffa55f] text-white px-6 py-4 rounded-xl transition-all flex items-center justify-center gap-2 group/btn shadow-lg shadow-[#ff6f0f]/20 hover:shadow-xl hover:shadow-[#ff6f0f]/30"
         >
           <span>Learn More</span>

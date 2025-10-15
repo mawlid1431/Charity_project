@@ -9,6 +9,7 @@ import { DonatePage } from './pages/DonatePage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { AdminPage } from './pages/AdminPage';
+import { ProjectDetailPage } from './pages/ProjectDetailPage';
 
 interface AppProps {
   initialPage?: string;
@@ -17,6 +18,7 @@ interface AppProps {
 function App({ initialPage = 'home' }: AppProps) {
   const [darkMode, setDarkMode] = useState(false);
   const [currentPage, setCurrentPage] = useState(initialPage);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
   useEffect(() => {
     if (darkMode) {
@@ -32,8 +34,11 @@ function App({ initialPage = 'home' }: AppProps) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleNavigate = (page: string) => {
+  const handleNavigate = (page: string, projectId?: string) => {
     setCurrentPage(page);
+    if (projectId) {
+      setSelectedProjectId(projectId);
+    }
     scrollToTop();
 
     // Update URL for admin page
@@ -41,6 +46,8 @@ function App({ initialPage = 'home' }: AppProps) {
       window.history.pushState({}, '', '/admin');
     } else if (page === 'home') {
       window.history.pushState({}, '', '/');
+    } else if (page === 'project-detail' && projectId) {
+      window.history.pushState({}, '', `/project/${projectId}`);
     }
   };
 
@@ -64,10 +71,17 @@ function App({ initialPage = 'home' }: AppProps) {
           transition={{ duration: 0.3 }}
         >
           {currentPage === 'home' && <HomePage darkMode={darkMode} onNavigate={handleNavigate} />}
-          {currentPage === 'projects' && <ProjectsPage darkMode={darkMode} />}
+          {currentPage === 'projects' && <ProjectsPage darkMode={darkMode} onNavigate={handleNavigate} />}
           {currentPage === 'donate' && <DonatePage darkMode={darkMode} />}
           {currentPage === 'about' && <AboutPage darkMode={darkMode} />}
           {currentPage === 'contact' && <ContactPage darkMode={darkMode} />}
+          {currentPage === 'project-detail' && selectedProjectId && (
+            <ProjectDetailPage
+              darkMode={darkMode}
+              projectId={selectedProjectId}
+              onNavigate={handleNavigate}
+            />
+          )}
           {currentPage === 'admin' && <AdminPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
         </motion.div>
       </AnimatePresence>
