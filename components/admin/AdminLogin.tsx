@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Lock, User, Eye, EyeOff } from 'lucide-react';
+import { Lock, User, Eye, EyeOff, Sun, Moon } from 'lucide-react';
 
 interface AdminLoginProps {
     darkMode: boolean;
+    toggleDarkMode: () => void;
     onLogin: (success: boolean) => void;
 }
 
-export function AdminLogin({ darkMode, onLogin }: AdminLoginProps) {
+export function AdminLogin({ darkMode, toggleDarkMode, onLogin }: AdminLoginProps) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -34,14 +35,30 @@ export function AdminLogin({ darkMode, onLogin }: AdminLoginProps) {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-[calc(100vh-5rem)] px-4">
+        <div className="flex items-center justify-center min-h-[calc(100vh-5rem)] px-4 relative">
+            {/* Dark Mode Toggle */}
+            <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+                whileHover={{ scale: 1.1, rotate: 180 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={toggleDarkMode}
+                className={`absolute top-4 right-4 p-3 rounded-xl transition-all shadow-lg ${darkMode
+                        ? 'bg-white/10 text-white hover:bg-white/20'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+            >
+                {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </motion.button>
+
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
                 className={`w-full max-w-md p-8 rounded-2xl shadow-2xl ${darkMode
-                        ? 'bg-[#1a2f5f] border border-white/10'
-                        : 'bg-white border border-gray-200'
+                    ? 'bg-[#1a2f5f] border border-white/10'
+                    : 'bg-white border border-gray-200'
                     }`}
             >
                 {/* Logo */}
@@ -86,8 +103,8 @@ export function AdminLogin({ darkMode, onLogin }: AdminLoginProps) {
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all ${darkMode
-                                        ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                    ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                     }`}
                                 placeholder="Enter username"
                                 required
@@ -107,8 +124,8 @@ export function AdminLogin({ darkMode, onLogin }: AdminLoginProps) {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 className={`w-full pl-10 pr-12 py-3 rounded-lg border transition-all ${darkMode
-                                        ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                    ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                     }`}
                                 placeholder="Enter password"
                                 required
@@ -130,8 +147,8 @@ export function AdminLogin({ darkMode, onLogin }: AdminLoginProps) {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         className={`w-full py-3 px-4 rounded-lg font-medium transition-all ${isLoading
-                                ? 'bg-gray-400 cursor-not-allowed'
-                                : 'bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] hover:from-[#ff8f3f] hover:to-[#ffa55f] shadow-lg shadow-[#ff6f0f]/30 hover:shadow-xl hover:shadow-[#ff6f0f]/40'
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] hover:from-[#ff8f3f] hover:to-[#ffa55f] shadow-lg shadow-[#ff6f0f]/30 hover:shadow-xl hover:shadow-[#ff6f0f]/40'
                             } text-white`}
                     >
                         {isLoading ? (

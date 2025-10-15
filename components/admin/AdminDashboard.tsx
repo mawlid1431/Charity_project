@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { LogOut, Plus, BarChart3, Users, DollarSign, Target } from 'lucide-react';
+import { LogOut, BarChart3, Users, DollarSign, Target, Sun, Moon } from 'lucide-react';
 import { ProjectsManager } from './ProjectsManager';
 import { DonationsManager } from './DonationsManager';
 
 interface AdminDashboardProps {
     darkMode: boolean;
+    toggleDarkMode: () => void;
     onLogout: () => void;
 }
 
-export function AdminDashboard({ darkMode, onLogout }: AdminDashboardProps) {
+export function AdminDashboard({ darkMode, toggleDarkMode, onLogout }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState('projects');
 
     const tabs = [
@@ -37,6 +38,17 @@ export function AdminDashboard({ darkMode, onLogout }: AdminDashboardProps) {
                     </p>
                 </div>
                 <div className="flex gap-3">
+                    <motion.button
+                        whileHover={{ scale: 1.1, rotate: 180 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={toggleDarkMode}
+                        className={`p-3 rounded-xl transition-all shadow-lg ${darkMode
+                            ? 'bg-white/10 text-white hover:bg-white/20'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
+                    >
+                        {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                    </motion.button>
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}

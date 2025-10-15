@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'motion/react';
-import { X, Upload, DollarSign, FileText, Image } from 'lucide-react';
+import { X, DollarSign, FileText, Image, Camera } from 'lucide-react';
 
 interface Project {
     id: string;
@@ -31,6 +31,9 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
     });
 
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [imagePreview, setImagePreview] = useState<string>(project?.image || '');
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -54,6 +57,45 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
         if (errors[field]) {
             setErrors(prev => ({ ...prev, [field]: '' }));
         }
+    };
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                setErrors(prev => ({ ...prev, image: 'Please select a valid image file' }));
+                return;
+            }
+
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                setErrors(prev => ({ ...prev, image: 'Image size must be less than 5MB' }));
+                return;
+            }
+
+            setImageFile(file);
+
+            // Create preview URL
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const result = e.target?.result as string;
+                setImagePreview(result);
+                handleInputChange('image', result);
+            };
+            reader.readAsDataURL(file);
+
+            // Clear any previous errors
+            if (errors.image) {
+                setErrors(prev => ({ ...prev, image: '' }));
+            }
+        }
+    };
+
+    const handleImageUrlChange = (url: string) => {
+        setImagePreview(url);
+        setImageFile(null);
+        handleInputChange('image', url);
     };
 
     return (
@@ -99,10 +141,10 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                                 value={formData.name}
                                 onChange={(e) => handleInputChange('name', e.target.value)}
                                 className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all ${errors.name
-                                        ? 'border-red-500 focus:ring-red-500/20'
-                                        : darkMode
-                                            ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                            : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                    ? 'border-red-500 focus:ring-red-500/20'
+                                    : darkMode
+                                        ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                     }`}
                                 placeholder="Enter project name"
                             />
@@ -120,34 +162,96 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                             onChange={(e) => handleInputChange('description', e.target.value)}
                             rows={4}
                             className={`w-full px-4 py-3 rounded-lg border transition-all resize-none ${errors.description
-                                    ? 'border-red-500 focus:ring-red-500/20'
-                                    : darkMode
-                                        ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                ? 'border-red-500 focus:ring-red-500/20'
+                                : darkMode
+                                    ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                 }`}
                             placeholder="Enter project description"
                         />
                         {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
                     </div>
 
-                    {/* Image URL */}
+                    {/* Image Upload */}
                     <div>
                         <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            Project Image URL
+                            Project Image
                         </label>
-                        <div className="relative">
-                            <Image className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
-                            <input
-                                type="url"
-                                value={formData.image}
-                                onChange={(e) => handleInputChange('image', e.target.value)}
-                                className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all ${darkMode
+
+                        {/* Image Preview */}
+                        {imagePreview && (
+                            <div className="mb-4">
+                                <div className={`relative w-full h-48 rounded-lg overflow-hidden border-2 border-dashed ${darkMode ? 'border-white/20' : 'border-gray-300'
+                                    }`}>
+                                    <img
+                                        src={imagePreview}
+                                        alt="Project preview"
+                                        className="w-full h-full object-cover"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setImagePreview('');
+                                            setImageFile(null);
+                                            handleInputChange('image', '');
+                                            if (fileInputRef.current) fileInputRef.current.value = '';
+                                        }}
+                                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Upload Options */}
+                        <div className="space-y-4">
+                            {/* File Upload */}
+                            <div>
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                    className="hidden"
+                                />
+                                <motion.button
+                                    type="button"
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className={`w-full flex items-center justify-center gap-3 py-4 px-4 rounded-lg border-2 border-dashed transition-all ${darkMode
+                                        ? 'border-white/20 hover:border-[#ff6f0f]/50 bg-[#0f1c3f] text-gray-300 hover:text-white'
+                                        : 'border-gray-300 hover:border-[#ff6f0f]/50 bg-gray-50 text-gray-600 hover:text-gray-900'
+                                        }`}
+                                >
+                                    <Camera className="w-6 h-6" />
+                                    <div className="text-center">
+                                        <p className="font-medium">Upload Image from Device</p>
+                                        <p className="text-sm opacity-75">PNG, JPG, GIF up to 5MB</p>
+                                    </div>
+                                </motion.button>
+                            </div>
+
+                            {/* URL Input */}
+                            <div className="relative">
+                                <div className={`text-center text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'} mb-2`}>
+                                    OR
+                                </div>
+                                <Image className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
+                                <input
+                                    type="url"
+                                    value={formData.image}
+                                    onChange={(e) => handleImageUrlChange(e.target.value)}
+                                    className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all ${darkMode
                                         ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                         : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                    }`}
-                                placeholder="https://example.com/image.jpg"
-                            />
+                                        }`}
+                                    placeholder="Or paste image URL here..."
+                                />
+                            </div>
                         </div>
+                        {errors.image && <p className="text-red-500 text-sm mt-1">{errors.image}</p>}
                     </div>
 
                     {/* Amount Fields */}
@@ -166,10 +270,10 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                                     value={formData.targetAmount}
                                     onChange={(e) => handleInputChange('targetAmount', parseInt(e.target.value) || 0)}
                                     className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all ${errors.targetAmount
-                                            ? 'border-red-500 focus:ring-red-500/20'
-                                            : darkMode
-                                                ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                        ? 'border-red-500 focus:ring-red-500/20'
+                                        : darkMode
+                                            ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                            : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                         }`}
                                     placeholder="50000"
                                 />
@@ -191,10 +295,10 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                                     value={formData.raisedAmount}
                                     onChange={(e) => handleInputChange('raisedAmount', parseInt(e.target.value) || 0)}
                                     className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all ${errors.raisedAmount
-                                            ? 'border-red-500 focus:ring-red-500/20'
-                                            : darkMode
-                                                ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                        ? 'border-red-500 focus:ring-red-500/20'
+                                        : darkMode
+                                            ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                            : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                         }`}
                                     placeholder="25000"
                                 />
@@ -212,8 +316,8 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                             value={formData.status}
                             onChange={(e) => handleInputChange('status', e.target.value)}
                             className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
-                                    ? 'bg-[#0f1c3f] border-white/10 text-white focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
-                                    : 'bg-white border-gray-300 text-gray-900 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                ? 'bg-[#0f1c3f] border-white/10 text-white focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                : 'bg-white border-gray-300 text-gray-900 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                 }`}
                         >
                             <option value="active">Active</option>
@@ -230,8 +334,8 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                             whileTap={{ scale: 0.98 }}
                             onClick={onCancel}
                             className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all ${darkMode
-                                    ? 'bg-gray-600 text-white hover:bg-gray-700'
-                                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                                ? 'bg-gray-600 text-white hover:bg-gray-700'
+                                : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
                                 }`}
                         >
                             Cancel

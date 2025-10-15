@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Edit, Trash2, Eye, DollarSign, Calendar, Target } from 'lucide-react';
+import { Plus, Edit, Trash2, Target } from 'lucide-react';
 import { ProjectForm } from './ProjectForm';
 
 interface Project {
@@ -196,8 +196,8 @@ export function ProjectsManager({ darkMode }: ProjectsManagerProps) {
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => handleEditProject(project)}
                                     className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg transition-all ${darkMode
-                                            ? 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20'
-                                            : 'bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200'
+                                        ? 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20'
+                                        : 'bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200'
                                         }`}
                                 >
                                     <Edit className="w-4 h-4" />
@@ -208,8 +208,8 @@ export function ProjectsManager({ darkMode }: ProjectsManagerProps) {
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => handleDeleteProject(project.id)}
                                     className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg transition-all ${darkMode
-                                            ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20'
-                                            : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
+                                        ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20'
+                                        : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
                                         }`}
                                 >
                                     <Trash2 className="w-4 h-4" />

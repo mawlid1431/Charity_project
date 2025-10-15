@@ -5,9 +5,10 @@ import { AdminDashboard } from '../components/admin/AdminDashboard';
 
 interface AdminPageProps {
     darkMode: boolean;
+    toggleDarkMode: () => void;
 }
 
-export function AdminPage({ darkMode }: AdminPageProps) {
+export function AdminPage({ darkMode, toggleDarkMode }: AdminPageProps) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
@@ -41,7 +42,7 @@ export function AdminPage({ darkMode }: AdminPageProps) {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
                     >
-                        <AdminLogin darkMode={darkMode} onLogin={handleLogin} />
+                        <AdminLogin darkMode={darkMode} toggleDarkMode={toggleDarkMode} onLogin={handleLogin} />
                     </motion.div>
                 ) : (
                     <motion.div
@@ -51,7 +52,7 @@ export function AdminPage({ darkMode }: AdminPageProps) {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
                     >
-                        <AdminDashboard darkMode={darkMode} onLogout={handleLogout} />
+                        <AdminDashboard darkMode={darkMode} toggleDarkMode={toggleDarkMode} onLogout={handleLogout} />
                     </motion.div>
                 )}
             </AnimatePresence>

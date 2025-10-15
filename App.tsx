@@ -68,7 +68,7 @@ function App({ initialPage = 'home' }: AppProps) {
           {currentPage === 'donate' && <DonatePage darkMode={darkMode} />}
           {currentPage === 'about' && <AboutPage darkMode={darkMode} />}
           {currentPage === 'contact' && <ContactPage darkMode={darkMode} />}
-          {currentPage === 'admin' && <AdminPage darkMode={darkMode} />}
+          {currentPage === 'admin' && <AdminPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
         </motion.div>
       </AnimatePresence>
 
