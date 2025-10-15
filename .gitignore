@@ -43,9 +43,7 @@ migrations/
 # Media and uploads
 /media/
 uploads/
-*.png
-*.jpg
-*.jpeg
+
 
 # Build outputs
 dist/
