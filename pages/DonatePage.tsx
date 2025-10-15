@@ -354,32 +354,7 @@ export function DonatePage({ darkMode, onNavigate }: DonatePageProps) {
         </div>
       </section>
 
-      {/* Testimonial Section */}
-      <section className={`py-20 relative overflow-hidden ${darkMode ? 'bg-gradient-to-r from-[#0f1c3f] to-[#1a2f5f]' : 'bg-gradient-to-r from-[#1a2f5f] to-[#2a4f7f]'}`}>
-        <DecorativeElements />
 
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <div className="mb-6">
-              <span className="text-6xl text-[#ff6f0f]">"</span>
-            </div>
-            <p className="text-white/90 mb-6 text-xl">
-              Donating to Mubarak Charity has been one of the most rewarding experiences. Seeing the direct impact of my contribution through their transparent updates gives me confidence that my donation is truly making a difference.
-            </p>
-            <div className="flex items-center justify-center gap-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#ff6f0f] to-[#ff8f3f] rounded-full" />
-              <div className="text-left">
-                <p className="text-white">Sarah Johnson</p>
-                <p className="text-white/60">Monthly Donor</p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
     </div>
   );
 }
