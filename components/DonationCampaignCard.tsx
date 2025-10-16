@@ -15,6 +15,7 @@ interface DonationCampaignCardProps {
     status: 'active' | 'completed' | 'paused';
     darkMode: boolean;
     index: number;
+    onClick?: () => void;
 }
 
 export function DonationCampaignCard({
@@ -30,6 +31,7 @@ export function DonationCampaignCard({
     status,
     darkMode,
     index,
+    onClick,
 }: DonationCampaignCardProps) {
     const getStatusColor = () => {
         switch (status) {
@@ -53,7 +55,8 @@ export function DonationCampaignCard({
             viewport={{ once: true }}
             transition={{ delay: index * 0.1 }}
             whileHover={{ y: -10 }}
-            className={`rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
+            onClick={onClick}
+            className={`rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all ${onClick ? 'cursor-pointer' : ''} ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
                 }`}
         >
             {/* Image */}

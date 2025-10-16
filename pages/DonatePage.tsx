@@ -321,6 +321,7 @@ export function DonatePage({ darkMode, onNavigate }: DonatePageProps) {
                   {...campaign}
                   darkMode={darkMode}
                   index={index}
+                  onClick={() => onNavigate('donation-detail', campaign.id)}
                 />
               ))}
             </div>

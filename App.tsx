@@ -11,6 +11,7 @@ import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { AdminPage } from './pages/AdminPage';
 import { ProjectDetailPage } from './pages/ProjectDetailPage';
+import { DonationDetailPage } from './pages/DonationDetailPage';
 
 interface AppProps {
   initialPage?: string;
@@ -20,6 +21,7 @@ function App({ initialPage = 'home' }: AppProps) {
   const [darkMode, setDarkMode] = useState(false);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(null);
 
   useEffect(() => {
     if (darkMode) {
@@ -35,20 +37,26 @@ function App({ initialPage = 'home' }: AppProps) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleNavigate = (page: string, projectId?: string) => {
+  const handleNavigate = (page: string, id?: string) => {
     setCurrentPage(page);
-    if (projectId) {
-      setSelectedProjectId(projectId);
+    if (id) {
+      if (page === 'project-detail') {
+        setSelectedProjectId(id);
+      } else if (page === 'donation-detail') {
+        setSelectedCampaignId(id);
+      }
     }
     scrollToTop();
 
-    // Update URL for admin page
+    // Update URL
     if (page === 'admin') {
       window.history.pushState({}, '', '/admin');
     } else if (page === 'home') {
       window.history.pushState({}, '', '/');
-    } else if (page === 'project-detail' && projectId) {
-      window.history.pushState({}, '', `/project/${projectId}`);
+    } else if (page === 'project-detail' && id) {
+      window.history.pushState({}, '', `/project/${id}`);
+    } else if (page === 'donation-detail' && id) {
+      window.history.pushState({}, '', `/donation/${id}`);
     }
   };
 
@@ -81,6 +89,13 @@ function App({ initialPage = 'home' }: AppProps) {
             <ProjectDetailPage
               darkMode={darkMode}
               projectId={selectedProjectId}
+              onNavigate={handleNavigate}
+            />
+          )}
+          {currentPage === 'donation-detail' && selectedCampaignId && (
+            <DonationDetailPage
+              darkMode={darkMode}
+              campaignId={selectedCampaignId}
               onNavigate={handleNavigate}
             />
           )}
