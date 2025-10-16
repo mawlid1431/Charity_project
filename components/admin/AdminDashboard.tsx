@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { LogOut, BarChart3, Users, DollarSign, Target, Sun, Moon, FolderKanban, UsersRound, Heart } from 'lucide-react';
+import { LogOut, BarChart3, DollarSign, Target, Sun, Moon, FolderKanban, UsersRound, Heart } from 'lucide-react';
 import { ProjectsManager } from './ProjectsManager';
 import { TeamManager } from './TeamManager';
 import { DonationCampaignsManager } from './DonationCampaignsManager';

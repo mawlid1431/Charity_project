@@ -28,9 +28,6 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
         title: p.name,
         description: p.description,
         image: p.image,
-        progress: Math.round((Number(p.raised_amount) / Number(p.target_amount)) * 100),
-        raised: Number(p.raised_amount).toLocaleString(),
-        goal: Number(p.target_amount).toLocaleString(),
       }));
       setProjects(formattedProjects);
     } catch (error) {

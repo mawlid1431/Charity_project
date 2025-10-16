@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Edit, Trash2, Heart, Loader, MapPin, Calendar, DollarSign, ExternalLink } from 'lucide-react';
+import { Plus, Edit, Trash2, Heart, Loader, MapPin, Calendar, ExternalLink } from 'lucide-react';
 import { DonationAdminForm } from './DonationAdminForm';
 import { getDonationCampaigns, createDonationCampaign, updateDonationCampaign, deleteDonationCampaign } from '@/utils/supabase/helpers';
 import { toast } from 'sonner';
@@ -14,7 +14,7 @@ interface DonationCampaign {
     image: string;
     target_amount: number;
     raised_amount: number;
-    donation_link: string;
+    donation_link: string | null;
     status: 'active' | 'completed' | 'paused';
     created_at: string;
 }

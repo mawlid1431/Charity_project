@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import SimpleAdminDashboard from '../components/admin/SimpleAdminDashboard';
 import { supabase } from '../utils/supabase/client';
 
@@ -10,7 +9,6 @@ const AdminPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const router = useRouter();
 
     useEffect(() => {
         checkAuth();

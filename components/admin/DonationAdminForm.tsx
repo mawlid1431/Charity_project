@@ -12,7 +12,7 @@ interface Donation {
     image: string;
     targetAmount: number;
     raisedAmount: number;
-    donationLink: string;
+    donationLink: string | null;
     status: 'active' | 'completed' | 'paused';
 }
 

@@ -7,7 +7,7 @@ import { getActiveDonationCampaigns } from '@/utils/supabase/helpers';
 
 interface DonatePageProps {
   darkMode: boolean;
-  onNavigate: (page: string) => void;
+  onNavigate: (page: string, id?: string) => void;
 }
 
 export function DonatePage({ darkMode, onNavigate }: DonatePageProps) {

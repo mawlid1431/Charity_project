@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Edit, Trash2, Calendar, FileText, Image as ImageIcon, Search, MapPin, DollarSign, ExternalLink } from 'lucide-react';
+import { Plus, Edit, Trash2, Calendar, FileText, Search, MapPin, ExternalLink } from 'lucide-react';
 import { DonationAdminForm } from './DonationAdminForm';
 import { supabase } from '@/utils/supabase/client';
 
@@ -13,7 +13,7 @@ interface Donation {
     image: string;
     targetAmount: number;
     raisedAmount: number;
-    donationLink: string;
+    donationLink: string | null;
     status: 'active' | 'completed' | 'paused';
     created_at?: string;
     updated_at?: string;
