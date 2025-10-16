@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { Filter, Search, Loader } from 'lucide-react';
 import { DecorativeElements } from '../components/DecorativeElements';
 import { ProjectCard } from '../components/ProjectCard';
-import { getActiveProjects } from '@/utils/supabase/helpers';
+import { getProjects } from '@/utils/supabase/helpers';
 
 interface ProjectsPageProps {
   darkMode: boolean;
@@ -21,15 +21,13 @@ export function ProjectsPage({ darkMode, onNavigate }: ProjectsPageProps) {
 
   const loadProjects = async () => {
     try {
-      const data = await getActiveProjects();
+      const data = await getProjects();
       const formattedProjects = data.map(p => ({
         id: p.id,
         title: p.name,
         description: p.description,
         image: p.image,
-        progress: Math.round((Number(p.raised_amount) / Number(p.target_amount)) * 100),
-        raised: Number(p.raised_amount).toLocaleString(),
-        goal: Number(p.target_amount).toLocaleString(),
+        date: p.date,
       }));
       setAllProjects(formattedProjects);
     } catch (error) {

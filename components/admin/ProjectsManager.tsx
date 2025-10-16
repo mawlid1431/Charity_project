@@ -8,15 +8,10 @@ import { toast } from 'sonner';
 interface Project {
     id: string;
     name: string;
-    location: string;
     date: string;
     description: string;
     image: string;
-    targetAmount: number;
-    raisedAmount: number;
-    donationLink: string;
-    status: 'active' | 'completed' | 'paused';
-    createdAt: string;
+    created_at: string;
 }
 
 interface ProjectsManagerProps {
@@ -39,20 +34,7 @@ export function ProjectsManager({ darkMode, onRefresh }: ProjectsManagerProps) {
         try {
             setLoading(true);
             const data = await getProjects();
-            const formattedProjects = data.map(p => ({
-                id: p.id,
-                name: p.name,
-                location: p.location,
-                date: p.date,
-                description: p.description,
-                image: p.image,
-                targetAmount: Number(p.target_amount),
-                raisedAmount: Number(p.raised_amount),
-                donationLink: p.donation_link || '',
-                status: p.status,
-                createdAt: p.created_at
-            }));
-            setProjects(formattedProjects);
+            setProjects(data);
         } catch (error) {
             console.error('Error loading projects:', error);
             toast.error('Failed to load projects');
@@ -85,34 +67,24 @@ export function ProjectsManager({ darkMode, onRefresh }: ProjectsManagerProps) {
         }
     };
 
-    const handleSaveProject = async (projectData: Omit<Project, 'id' | 'createdAt'>) => {
+    const handleSaveProject = async (projectData: Omit<Project, 'id' | 'created_at'>) => {
         try {
             if (editingProject) {
                 // Update existing project
                 await updateProject(editingProject.id, {
                     name: projectData.name,
-                    location: projectData.location,
                     date: projectData.date,
                     description: projectData.description,
-                    image: projectData.image,
-                    target_amount: projectData.targetAmount,
-                    raised_amount: projectData.raisedAmount,
-                    donation_link: projectData.donationLink,
-                    status: projectData.status
+                    image: projectData.image
                 });
                 toast.success('Project updated successfully');
             } else {
                 // Add new project
                 await createProject({
                     name: projectData.name,
-                    location: projectData.location,
                     date: projectData.date,
                     description: projectData.description,
-                    image: projectData.image,
-                    target_amount: projectData.targetAmount,
-                    raised_amount: projectData.raisedAmount,
-                    donation_link: projectData.donationLink,
-                    status: projectData.status
+                    image: projectData.image
                 });
                 toast.success('Project created successfully');
             }
@@ -126,18 +98,7 @@ export function ProjectsManager({ darkMode, onRefresh }: ProjectsManagerProps) {
         }
     };
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'active': return 'bg-green-500';
-            case 'completed': return 'bg-blue-500';
-            case 'paused': return 'bg-yellow-500';
-            default: return 'bg-gray-500';
-        }
-    };
 
-    const getProgressPercentage = (raised: number, target: number) => {
-        return Math.min((raised / target) * 100, 100);
-    };
 
     return (
         <div>
@@ -195,18 +156,7 @@ export function ProjectsManager({ darkMode, onRefresh }: ProjectsManagerProps) {
                                     }}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                                <div className="absolute top-3 right-3">
-                                    <span className={`px-2 py-1 rounded-full text-xs font-medium text-white ${getStatusColor(project.status)}`}>
-                                        {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
-                                    </span>
-                                </div>
                                 <div className="absolute bottom-3 left-3 right-3">
-                                    <div className="flex items-center gap-2 text-white text-xs mb-1">
-                                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                                        </svg>
-                                        {project.location}
-                                    </div>
                                     <div className="flex items-center gap-2 text-white text-xs">
                                         <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
@@ -221,43 +171,9 @@ export function ProjectsManager({ darkMode, onRefresh }: ProjectsManagerProps) {
                                 <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                                     {project.name}
                                 </h3>
-                                <p className={`text-sm mb-4 line-clamp-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                                <p className={`text-sm mb-6 line-clamp-3 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                                     {project.description}
                                 </p>
-
-                                {/* Progress */}
-                                <div className="mb-4">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                            Progress
-                                        </span>
-                                        <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                            {getProgressPercentage(project.raisedAmount, project.targetAmount).toFixed(0)}%
-                                        </span>
-                                    </div>
-                                    <div className={`w-full h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
-                                        <div
-                                            className="h-2 bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] rounded-full transition-all duration-500"
-                                            style={{ width: `${getProgressPercentage(project.raisedAmount, project.targetAmount)}%` }}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Amounts */}
-                                <div className="flex justify-between items-center mb-4">
-                                    <div>
-                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Raised</p>
-                                        <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                            ${project.raisedAmount.toLocaleString()}
-                                        </p>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Target</p>
-                                        <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                            ${project.targetAmount.toLocaleString()}
-                                        </p>
-                                    </div>
-                                </div>
 
                                 {/* Actions */}
                                 <div className="flex gap-2">

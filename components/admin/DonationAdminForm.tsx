@@ -1,29 +1,39 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { X, Save, Image as ImageIcon, Calendar, FileText, Upload, Loader } from 'lucide-react';
+import { X, Save, Image as ImageIcon, MapPin, Calendar, FileText, DollarSign, Activity, Upload, Loader, Link } from 'lucide-react';
 import { supabase } from '@/utils/supabase/client';
 
-interface Project {
+interface Donation {
     id: string;
     name: string;
+    location: string;
     date: string;
     description: string;
     image: string;
+    targetAmount: number;
+    raisedAmount: number;
+    donationLink: string;
+    status: 'active' | 'completed' | 'paused';
 }
 
-interface ProjectFormProps {
+interface DonationAdminFormProps {
     darkMode: boolean;
-    project: Project | null;
-    onSave: (project: Omit<Project, 'id'>) => void;
+    donation: Donation | null;
+    onSave: (donation: Omit<Donation, 'id'>) => void;
     onCancel: () => void;
 }
 
-export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectFormProps) {
+export function DonationAdminForm({ darkMode, donation, onSave, onCancel }: DonationAdminFormProps) {
     const [formData, setFormData] = useState({
         name: '',
+        location: '',
         date: '',
         description: '',
-        image: ''
+        image: '',
+        targetAmount: 0,
+        raisedAmount: 0,
+        donationLink: '',
+        status: 'active' as 'active' | 'completed' | 'paused'
     });
 
     const [uploading, setUploading] = useState(false);
@@ -31,16 +41,21 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
     const [imagePreview, setImagePreview] = useState<string>('');
 
     useEffect(() => {
-        if (project) {
+        if (donation) {
             setFormData({
-                name: project.name,
-                date: project.date || '',
-                description: project.description,
-                image: project.image
+                name: donation.name,
+                location: donation.location || '',
+                date: donation.date || '',
+                description: donation.description,
+                image: donation.image,
+                targetAmount: donation.targetAmount,
+                raisedAmount: donation.raisedAmount,
+                donationLink: donation.donationLink || '',
+                status: donation.status
             });
-            setImagePreview(project.image);
+            setImagePreview(donation.image);
         }
-    }, [project]);
+    }, [donation]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -58,11 +73,11 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
         onSave(formData);
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: value
+            [name]: name === 'targetAmount' || name === 'raisedAmount' ? parseFloat(value) || 0 : value
         }));
     };
 
@@ -96,11 +111,11 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
         try {
             const fileExt = file.name.split('.').pop();
             const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-            const filePath = `projects/${fileName}`;
+            const filePath = `donations/${fileName}`;
 
             // Upload to Supabase Storage
             const { error } = await supabase.storage
-                .from('project-images')
+                .from('donation-images')
                 .upload(filePath, file, {
                     cacheControl: '3600',
                     upsert: false
@@ -114,7 +129,7 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
 
             // Get public URL
             const { data: { publicUrl } } = supabase.storage
-                .from('project-images')
+                .from('donation-images')
                 .getPublicUrl(filePath);
 
             return publicUrl;
@@ -151,7 +166,7 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                 <div className={`sticky top-0 z-10 flex justify-between items-center p-6 border-b ${darkMode ? 'bg-[#1a2f5f] border-white/10' : 'bg-white border-gray-200'
                     }`}>
                     <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                        {project ? 'Edit Project' : 'Add New Project'}
+                        {donation ? 'Edit Donation Campaign' : 'Add New Donation Campaign'}
                     </h2>
                     <motion.button
                         whileHover={{ scale: 1.1, rotate: 90 }}
@@ -179,7 +194,7 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                             value={formData.name}
                             onChange={handleChange}
                             required
-                            placeholder="Enter project name"
+                            placeholder="Enter donation campaign name"
                             className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
                                 ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                 : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
@@ -187,33 +202,33 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                         />
                     </div>
 
-                    {/* Project Description */}
+                    {/* Location */}
                     <div>
                         <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
                             }`}>
-                            <FileText className="w-4 h-4" />
-                            Project Description *
+                            <MapPin className="w-4 h-4" />
+                            Location *
                         </label>
-                        <textarea
-                            name="description"
-                            value={formData.description}
+                        <input
+                            type="text"
+                            name="location"
+                            value={formData.location}
                             onChange={handleChange}
                             required
-                            rows={4}
-                            placeholder="Enter detailed project description"
-                            className={`w-full px-4 py-3 rounded-lg border transition-all resize-none ${darkMode
+                            placeholder="Enter campaign location"
+                            className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
                                 ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                 : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                 }`}
                         />
                     </div>
 
-                    {/* Project Date */}
+                    {/* Start Date */}
                     <div>
                         <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
                             }`}>
                             <Calendar className="w-4 h-4" />
-                            Project Date *
+                            Start Date *
                         </label>
                         <input
                             type="date"
@@ -224,6 +239,27 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                             className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
                                 ? 'bg-[#0f1c3f] border-white/10 text-white focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                 : 'bg-white border-gray-300 text-gray-900 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                }`}
+                        />
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                        <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                            }`}>
+                            <FileText className="w-4 h-4" />
+                            Description *
+                        </label>
+                        <textarea
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            required
+                            rows={4}
+                            placeholder="Enter detailed campaign description"
+                            className={`w-full px-4 py-3 rounded-lg border transition-all resize-none ${darkMode
+                                ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                 }`}
                         />
                     </div>
@@ -244,7 +280,7 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                                 }`}>
                                 <Upload className="w-5 h-5 text-[#ff6f0f]" />
                                 <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                                    {imageFile ? imageFile.name : 'Click to upload project image'}
+                                    {imageFile ? imageFile.name : 'Click to upload image'}
                                 </span>
                                 <input
                                     type="file"
@@ -298,6 +334,128 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                         )}
                     </div>
 
+                    {/* Amounts Row */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Target Amount */}
+                        <div>
+                            <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                                }`}>
+                                <DollarSign className="w-4 h-4" />
+                                Target Amount ($) *
+                            </label>
+                            <input
+                                type="number"
+                                name="targetAmount"
+                                value={formData.targetAmount}
+                                onChange={handleChange}
+                                required
+                                min="0"
+                                step="100"
+                                placeholder="50000"
+                                className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
+                                    ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                    }`}
+                            />
+                        </div>
+
+                        {/* Raised Amount */}
+                        <div>
+                            <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                                }`}>
+                                <DollarSign className="w-4 h-4" />
+                                Raised Amount ($) *
+                            </label>
+                            <input
+                                type="number"
+                                name="raisedAmount"
+                                value={formData.raisedAmount}
+                                onChange={handleChange}
+                                required
+                                min="0"
+                                step="100"
+                                placeholder="15000"
+                                className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
+                                    ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                    }`}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Donation Link */}
+                    <div>
+                        <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                            }`}>
+                            <Link className="w-4 h-4" />
+                            Donation Link
+                        </label>
+                        <input
+                            type="url"
+                            name="donationLink"
+                            value={formData.donationLink}
+                            onChange={handleChange}
+                            placeholder="https://paypal.me/yourcampaign"
+                            className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
+                                ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                }`}
+                        />
+                        <p className={`text-xs mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                            Optional: PayPal, Stripe, or any donation page URL
+                        </p>
+                    </div>
+
+                    {/* Status */}
+                    <div>
+                        <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
+                            }`}>
+                            <Activity className="w-4 h-4" />
+                            Status *
+                        </label>
+                        <select
+                            name="status"
+                            value={formData.status}
+                            onChange={handleChange}
+                            required
+                            className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
+                                ? 'bg-[#0f1c3f] border-white/10 text-white focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                : 'bg-white border-gray-300 text-gray-900 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                }`}
+                        >
+                            <option value="active">Active</option>
+                            <option value="paused">Paused</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                        <p className={`text-xs mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                            Active: Accepting donations | Paused: Temporarily stopped | Completed: Goal reached
+                        </p>
+                    </div>
+
+                    {/* Progress Preview */}
+                    {formData.targetAmount > 0 && (
+                        <div className={`p-4 rounded-lg ${darkMode ? 'bg-[#0f1c3f] border border-white/10' : 'bg-gray-50 border border-gray-200'
+                            }`}>
+                            <p className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                Progress Preview
+                            </p>
+                            <div className="flex justify-between items-center mb-2">
+                                <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                    ${formData.raisedAmount.toLocaleString()} raised
+                                </span>
+                                <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                    {((formData.raisedAmount / formData.targetAmount) * 100).toFixed(1)}%
+                                </span>
+                            </div>
+                            <div className={`w-full h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                                <div
+                                    className="h-2 bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] rounded-full transition-all"
+                                    style={{ width: `${Math.min((formData.raisedAmount / formData.targetAmount) * 100, 100)}%` }}
+                                />
+                            </div>
+                        </div>
+                    )}
+
                     {/* Action Buttons */}
                     <div className="flex gap-3 pt-4">
                         <motion.button
@@ -328,7 +486,7 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                             ) : (
                                 <>
                                     <Save className="w-5 h-5" />
-                                    {project ? 'Update Project' : 'Create Project'}
+                                    {donation ? 'Update Campaign' : 'Create Campaign'}
                                 </>
                             )}
                         </motion.button>

@@ -1,7 +1,9 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Shield, Award, TrendingUp, Users } from 'lucide-react';
+import { Shield, Award, TrendingUp, Users, Loader } from 'lucide-react';
 import { DecorativeElements } from '../components/DecorativeElements';
-import { DonationForm } from '../components/DonationForm';
+import { DonationCampaignCard } from '../components/DonationCampaignCard';
+import { getActiveDonationCampaigns } from '@/utils/supabase/helpers';
 
 interface DonatePageProps {
   darkMode: boolean;
@@ -9,6 +11,37 @@ interface DonatePageProps {
 }
 
 export function DonatePage({ darkMode, onNavigate }: DonatePageProps) {
+  const [campaigns, setCampaigns] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load donation campaigns from Supabase
+  useEffect(() => {
+    loadCampaigns();
+  }, []);
+
+  const loadCampaigns = async () => {
+    try {
+      const data = await getActiveDonationCampaigns();
+      const formattedCampaigns = data.map(c => ({
+        id: c.id,
+        title: c.project_donation_name,
+        description: c.description,
+        location: c.location,
+        date: c.date,
+        image: c.image,
+        raised: Number(c.raised_amount).toLocaleString(),
+        goal: Number(c.target_amount).toLocaleString(),
+        progress: Math.round((Number(c.raised_amount) / Number(c.target_amount)) * 100),
+        donationLink: c.donation_link,
+        status: c.status,
+      }));
+      setCampaigns(formattedCampaigns);
+    } catch (error) {
+      console.error('Error loading donation campaigns:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const benefits = [
     {
       icon: Shield,
@@ -251,18 +284,47 @@ export function DonatePage({ darkMode, onNavigate }: DonatePageProps) {
         </div>
       </section>
 
-      {/* Donation Form Section */}
+      {/* Active Donation Campaigns */}
       <section className={`py-16 ${darkMode ? 'bg-[#0a1628]' : 'bg-white'}`}>
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className={`rounded-3xl p-8 md:p-12 shadow-2xl ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
-              }`}
+            className="text-center mb-12"
           >
-            <DonationForm darkMode={darkMode} onNavigate={onNavigate} />
+            <h2 className={`mb-4 ${darkMode ? 'text-white' : 'text-[#1a2f5f]'}`}>
+              Active Donation Campaigns
+            </h2>
+            <p className={`max-w-2xl mx-auto ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+              Choose a campaign to support and make a direct impact
+            </p>
           </motion.div>
+
+          {loading ? (
+            <div className="flex justify-center py-20">
+              <Loader className="w-12 h-12 animate-spin text-[#ff6f0f]" />
+            </div>
+          ) : campaigns.length === 0 ? (
+            <div className="text-center py-20">
+              <p className={`text-xl ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                No active campaigns at the moment
+              </p>
+              <p className={`text-sm mt-2 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                Check back soon for new campaigns!
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {campaigns.map((campaign, index) => (
+                <DonationCampaignCard
+                  key={campaign.id}
+                  {...campaign}
+                  darkMode={darkMode}
+                  index={index}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
