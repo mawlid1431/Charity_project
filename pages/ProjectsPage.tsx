@@ -109,7 +109,12 @@ export function ProjectsPage({ darkMode, onNavigate }: ProjectsPageProps) {
       {/* Projects Grid */}
       <section className={`py-16 ${darkMode ? 'bg-[#0a1628]' : 'bg-white'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className={`grid gap-8 ${allProjects.length === 1
+              ? 'grid-cols-1 max-w-md mx-auto'
+              : allProjects.length === 2
+                ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto'
+                : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+            }`}>
             {loading ? (
               <div className="col-span-full flex justify-center py-20">
                 <Loader className="w-12 h-12 animate-spin text-[#ff6f0f]" />

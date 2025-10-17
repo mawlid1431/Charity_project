@@ -61,7 +61,12 @@ export function TestimonialsPage({ darkMode, onNavigate }: TestimonialsPageProps
                         {testimonials.length > 0 ? (
                             <>
                                 {/* Testimonials Grid */}
-                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                                <div className={`grid gap-8 mb-16 ${testimonials.length === 1
+                                    ? 'grid-cols-1 max-w-md mx-auto'
+                                    : testimonials.length === 2
+                                        ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto'
+                                        : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                                    }`}>
                                     {testimonials.map((testimonial, index) => (
                                         <motion.div
                                             key={testimonial.id}
@@ -218,6 +223,6 @@ export function TestimonialsPage({ darkMode, onNavigate }: TestimonialsPageProps
                     </motion.div>
                 )}
             </div>
-        </div>
+        </div >
     );
 }

@@ -92,7 +92,7 @@ function App({ initialPage = 'home' }: AppProps) {
 
       {currentPage !== 'admin' && (
         <>
-          <Footer darkMode={darkMode} />
+          <Footer darkMode={darkMode} onNavigate={setCurrentPage} />
           <WhatsAppButton />
         </>
       )}

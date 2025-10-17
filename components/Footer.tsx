@@ -2,9 +2,10 @@ import { Heart, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } fr
 
 interface FooterProps {
   darkMode: boolean;
+  onNavigate: (page: string) => void;
 }
 
-export function Footer({ darkMode }: FooterProps) {
+export function Footer({ darkMode, onNavigate }: FooterProps) {
   return (
     <footer className={`${darkMode ? 'bg-[#0a1628] text-white' : 'bg-[#1a2f5f] text-white'} border-t border-white/10`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -60,29 +61,52 @@ export function Footer({ darkMode }: FooterProps) {
             <h3 className="mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-white/70 hover:text-[#ff6f0f] transition-colors">
+                <button
+                  onClick={() => onNavigate('home')}
+                  className="text-white/70 hover:text-[#ff6f0f] transition-colors text-left"
+                >
                   Home
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-white/70 hover:text-[#ff6f0f] transition-colors">
-                  Projects
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-white/70 hover:text-[#ff6f0f] transition-colors">
-                  Donate
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-white/70 hover:text-[#ff6f0f] transition-colors">
+                <button
+                  onClick={() => onNavigate('about')}
+                  className="text-white/70 hover:text-[#ff6f0f] transition-colors text-left"
+                >
                   About
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-white/70 hover:text-[#ff6f0f] transition-colors">
+                <button
+                  onClick={() => onNavigate('projects')}
+                  className="text-white/70 hover:text-[#ff6f0f] transition-colors text-left"
+                >
+                  Projects
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => onNavigate('success-stories')}
+                  className="text-white/70 hover:text-[#ff6f0f] transition-colors text-left"
+                >
+                  Success Stories
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => onNavigate('testimonials')}
+                  className="text-white/70 hover:text-[#ff6f0f] transition-colors text-left"
+                >
+                  Testimonials
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => onNavigate('contact')}
+                  className="text-white/70 hover:text-[#ff6f0f] transition-colors text-left"
+                >
                   Contact
-                </a>
+                </button>
               </li>
             </ul>
           </div>

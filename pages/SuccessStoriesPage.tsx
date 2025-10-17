@@ -73,7 +73,12 @@ export function SuccessStoriesPage({ darkMode, onNavigate }: SuccessStoriesPageP
                         {stories.length > 0 ? (
                             <>
                                 {/* Success Stories Grid */}
-                                <div className="grid md:grid-cols-2 gap-8">
+                                <div className={`grid gap-8 ${stories.length === 1
+                                    ? 'grid-cols-1 max-w-md mx-auto'
+                                    : stories.length === 2
+                                        ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto'
+                                        : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                                    }`}>
                                     {stories.map((story, index) => {
                                         const StoryIcon = story.icon || getProjectIcon(story.project);
                                         return (
@@ -321,6 +326,6 @@ export function SuccessStoriesPage({ darkMode, onNavigate }: SuccessStoriesPageP
                     </>
                 )}
             </div>
-        </div>
+        </div >
     );
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Heart, BookOpen, Users, Droplet, ArrowRight, Play, TrendingUp, Award, Target, Zap, Loader } from 'lucide-react';
+import { Heart, BookOpen, Users, ArrowRight, Play, TrendingUp, Award, Target, Zap, Loader } from 'lucide-react';
 import { DecorativeElements } from '../components/DecorativeElements';
 import { ProjectCard } from '../components/ProjectCard';
 import { TypewriterText } from '../components/TypewriterText';
@@ -62,13 +62,11 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
     { icon: Heart, title: 'Health Care', count: '45+ Programs', color: 'from-red-500 to-pink-500' },
     { icon: BookOpen, title: 'Education', count: '60+ Programs', color: 'from-blue-500 to-cyan-500' },
     { icon: Users, title: 'Community', count: '35+ Programs', color: 'from-purple-500 to-indigo-500' },
-    { icon: Droplet, title: 'Clean Water', count: '25+ Programs', color: 'from-green-500 to-emerald-500' },
   ];
 
   const stats = [
-    { icon: Users, number: '10,000+', label: 'Lives Impacted', color: 'from-orange-500 to-red-500' },
-    { icon: BookOpen, number: '50+', label: 'Active Projects', color: 'from-blue-500 to-cyan-500' },
-    { icon: Heart, number: '$500K+', label: 'Funds Raised', color: 'from-pink-500 to-purple-500' },
+    { icon: Users, number: '1000+', label: 'Lives Impacted', color: 'from-orange-500 to-red-500' },
+    { icon: BookOpen, number: '10+', label: 'Active Projects', color: 'from-blue-500 to-cyan-500' },
   ];
 
   const features = [
@@ -171,7 +169,7 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
                   </div>
                   <div>
                     <p className="text-xs text-gray-600 mb-1">Lives Impacted</p>
-                    <p className="text-xl text-[#ff6f0f]">10,000+</p>
+                    <p className="text-xl text-[#ff6f0f]">1000+</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 pt-2.5 border-t border-gray-100">
@@ -317,7 +315,7 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 max-w-7xl mx-auto" style={{ gap: '6rem' }}>
             {categories.map((category, index) => (
               <motion.div
                 key={index}
@@ -374,7 +372,12 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <div className={`grid gap-8 mb-12 ${projects.length === 1
+              ? 'grid-cols-1 max-w-md mx-auto'
+              : projects.length === 2
+                ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto'
+                : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+            }`}>
             {loading ? (
               <div className="col-span-full flex justify-center py-12">
                 <Loader className="w-8 h-8 animate-spin text-[#ff6f0f]" />
@@ -472,7 +475,7 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
         <DecorativeElements />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 max-w-7xl mx-auto" style={{ gap: '8rem' }}>
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
