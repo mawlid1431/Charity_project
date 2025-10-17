@@ -147,11 +147,11 @@ export function ProjectDetailPage({ darkMode, projectId, onNavigate }: ProjectDe
                             About This Project
                         </h2>
                         <div className={`text-lg leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {project.description.split('\n').map((paragraph, index) => (
+                            {project.description?.split('\n').map((paragraph, index) => (
                                 <p key={index} className="mb-4">
                                     {paragraph}
                                 </p>
-                            ))}
+                            )) || <p>No description available.</p>}
                         </div>
                     </div>
                 </motion.div>

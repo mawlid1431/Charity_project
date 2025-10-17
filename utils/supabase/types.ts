@@ -9,6 +9,7 @@ export interface Database {
                     date: string;
                     description: string;
                     image: string;
+                    video_url: string | null;
                     created_at: string;
                     updated_at: string;
                 };
@@ -58,6 +59,7 @@ export interface Database {
                     story: string;
                     impact: string;
                     date: string;
+                    video_url: string | null;
                     created_at: string;
                     updated_at: string;
                 };

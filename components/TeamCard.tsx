@@ -8,9 +8,11 @@ interface TeamCardProps {
   image: string;
   darkMode: boolean;
   index: number;
+  linkedinUrl?: string;
+  email?: string;
 }
 
-export function TeamCard({ name, role, image, darkMode, index }: TeamCardProps) {
+export function TeamCard({ name, role, image, darkMode, index, linkedinUrl, email }: TeamCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -18,9 +20,8 @@ export function TeamCard({ name, role, image, darkMode, index }: TeamCardProps) 
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
       whileHover={{ y: -10 }}
-      className={`rounded-2xl overflow-hidden ${
-        darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-black/5'
-      } shadow-lg hover:shadow-2xl transition-all duration-300`}
+      className={`rounded-2xl overflow-hidden ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-black/5'
+        } shadow-lg hover:shadow-2xl transition-all duration-300`}
     >
       <div className="relative h-80 overflow-hidden group">
         <ImageWithFallback
@@ -29,20 +30,26 @@ export function TeamCard({ name, role, image, darkMode, index }: TeamCardProps) 
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6 gap-4">
-          <motion.a
-            href="#"
-            whileHover={{ scale: 1.2 }}
-            className="w-10 h-10 rounded-full bg-[#ff6f0f] flex items-center justify-center text-white"
-          >
-            <Linkedin className="w-5 h-5" />
-          </motion.a>
-          <motion.a
-            href="#"
-            whileHover={{ scale: 1.2 }}
-            className="w-10 h-10 rounded-full bg-[#ff6f0f] flex items-center justify-center text-white"
-          >
-            <Mail className="w-5 h-5" />
-          </motion.a>
+          {linkedinUrl && (
+            <motion.a
+              href={linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.2 }}
+              className="w-10 h-10 rounded-full bg-[#ff6f0f] flex items-center justify-center text-white"
+            >
+              <Linkedin className="w-5 h-5" />
+            </motion.a>
+          )}
+          {email && (
+            <motion.a
+              href={`mailto:${email}`}
+              whileHover={{ scale: 1.2 }}
+              className="w-10 h-10 rounded-full bg-[#ff6f0f] flex items-center justify-center text-white"
+            >
+              <Mail className="w-5 h-5" />
+            </motion.a>
+          )}
         </div>
       </div>
       <div className="p-6 text-center">
