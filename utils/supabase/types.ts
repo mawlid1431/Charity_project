@@ -15,43 +15,6 @@ export interface Database {
                 Insert: Omit<Database['public']['Tables']['projects']['Row'], 'id' | 'created_at' | 'updated_at'>;
                 Update: Partial<Database['public']['Tables']['projects']['Insert']>;
             };
-            donation_campaigns: {
-                Row: {
-                    id: string;
-                    project_donation_name: string;
-                    description: string;
-                    location: string;
-                    date: string;
-                    image: string;
-                    target_amount: number;
-                    raised_amount: number;
-                    donation_link: string | null;
-                    status: 'active' | 'completed' | 'paused';
-                    created_at: string;
-                    updated_at: string;
-                };
-                Insert: Omit<Database['public']['Tables']['donation_campaigns']['Row'], 'id' | 'created_at' | 'updated_at'>;
-                Update: Partial<Database['public']['Tables']['donation_campaigns']['Insert']>;
-            };
-            donations: {
-                Row: {
-                    id: string;
-                    project_id: string | null;
-                    campaign_id: string | null;
-                    donor_name: string;
-                    donor_email: string;
-                    amount: number;
-                    payment_status: 'pending' | 'completed' | 'failed';
-                    payment_method: string | null;
-                    stripe_payment_intent_id: string | null;
-                    message: string | null;
-                    anonymous: boolean;
-                    created_at: string;
-                    updated_at: string;
-                };
-                Insert: Omit<Database['public']['Tables']['donations']['Row'], 'id' | 'created_at' | 'updated_at'>;
-                Update: Partial<Database['public']['Tables']['donations']['Insert']>;
-            };
             team_members: {
                 Row: {
                     id: string;
@@ -66,6 +29,40 @@ export interface Database {
                 };
                 Insert: Omit<Database['public']['Tables']['team_members']['Row'], 'id' | 'created_at' | 'updated_at'>;
                 Update: Partial<Database['public']['Tables']['team_members']['Insert']>;
+            };
+            testimonials: {
+                Row: {
+                    id: string;
+                    name: string;
+                    role: string;
+                    location: string;
+                    image: string;
+                    rating: number;
+                    feedback: string;
+                    project: string;
+                    date: string;
+                    created_at: string;
+                    updated_at: string;
+                };
+                Insert: Omit<Database['public']['Tables']['testimonials']['Row'], 'id' | 'created_at' | 'updated_at'>;
+                Update: Partial<Database['public']['Tables']['testimonials']['Insert']>;
+            };
+            success_stories: {
+                Row: {
+                    id: string;
+                    name: string;
+                    age: number;
+                    location: string;
+                    project: string;
+                    image: string;
+                    story: string;
+                    impact: string;
+                    date: string;
+                    created_at: string;
+                    updated_at: string;
+                };
+                Insert: Omit<Database['public']['Tables']['success_stories']['Row'], 'id' | 'created_at' | 'updated_at'>;
+                Update: Partial<Database['public']['Tables']['success_stories']['Insert']>;
             };
         };
     };

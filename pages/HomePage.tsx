@@ -230,8 +230,8 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
                 className="grid grid-cols-3 gap-4 py-4"
               >
                 {[
-                  { value: '50+', label: 'Projects' },
-                  { value: '15+', label: 'Countries' },
+                  { value: 'over 10', label: 'Projects' },
+                  { value: 'Somaliland', label: 'Somaliland' },
                   { value: '100%', label: 'Transparent' },
                 ].map((stat, index) => (
                   <motion.div
@@ -254,11 +254,11 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => onNavigate('donate')}
+                  onClick={() => onNavigate('projects')}
                   className="bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white px-8 py-3 rounded-xl flex items-center gap-3 shadow-lg shadow-[#ff6f0f]/30 hover:shadow-xl hover:shadow-[#ff6f0f]/40 transition-all group"
                 >
                   <Heart className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  <span>Donate Now</span>
+                  <span>View Projects</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
 
@@ -370,7 +370,7 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
               Featured Projects
             </h2>
             <p className={`max-w-2xl mx-auto text-lg ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
-              Your donations are creating real, measurable impact in communities
+              Creating real, measurable impact in communities across Somaliland
             </p>
           </motion.div>
 
@@ -531,22 +531,10 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
               Ready to Make a Difference?
             </h2>
             <p className="text-white/80 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
-              Every contribution, big or small, helps us change lives and build stronger communities. Join us today and be part of something bigger.
+              Join us in changing lives and building stronger communities. Be part of something bigger.
             </p>
 
             <div className="flex flex-wrap gap-4 justify-center">
-              <motion.button
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => onNavigate('donate')}
-                className="bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white px-12 py-5 rounded-xl shadow-xl hover:shadow-2xl transition-all text-lg group"
-              >
-                <span className="flex items-center gap-3">
-                  Start Donating Today
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </motion.button>
-
               <motion.button
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.98 }}

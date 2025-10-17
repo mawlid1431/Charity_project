@@ -6,12 +6,12 @@ import { Footer } from './components/Footer';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { HomePage } from './pages/HomePage';
 import { ProjectsPage } from './pages/ProjectsPage';
-import { DonatePage } from './pages/DonatePage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { AdminPage } from './pages/AdminPage';
 import { ProjectDetailPage } from './pages/ProjectDetailPage';
-import { DonationDetailPage } from './pages/DonationDetailPage';
+import { SuccessStoriesPage } from './pages/SuccessStoriesPage';
+import { TestimonialsPage } from './pages/TestimonialsPage';
 
 interface AppProps {
   initialPage?: string;
@@ -21,7 +21,6 @@ function App({ initialPage = 'home' }: AppProps) {
   const [darkMode, setDarkMode] = useState(false);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(null);
 
   useEffect(() => {
     if (darkMode) {
@@ -39,12 +38,8 @@ function App({ initialPage = 'home' }: AppProps) {
 
   const handleNavigate = (page: string, id?: string) => {
     setCurrentPage(page);
-    if (id) {
-      if (page === 'project-detail') {
-        setSelectedProjectId(id);
-      } else if (page === 'donation-detail') {
-        setSelectedCampaignId(id);
-      }
+    if (id && page === 'project-detail') {
+      setSelectedProjectId(id);
     }
     scrollToTop();
 
@@ -55,8 +50,6 @@ function App({ initialPage = 'home' }: AppProps) {
       window.history.pushState({}, '', '/');
     } else if (page === 'project-detail' && id) {
       window.history.pushState({}, '', `/project/${id}`);
-    } else if (page === 'donation-detail' && id) {
-      window.history.pushState({}, '', `/donation/${id}`);
     }
   };
 
@@ -82,20 +75,14 @@ function App({ initialPage = 'home' }: AppProps) {
         >
           {currentPage === 'home' && <HomePage darkMode={darkMode} onNavigate={handleNavigate} />}
           {currentPage === 'projects' && <ProjectsPage darkMode={darkMode} onNavigate={handleNavigate} />}
-          {currentPage === 'donate' && <DonatePage darkMode={darkMode} onNavigate={handleNavigate} />}
+          {currentPage === 'success-stories' && <SuccessStoriesPage darkMode={darkMode} onNavigate={handleNavigate} />}
+          {currentPage === 'testimonials' && <TestimonialsPage darkMode={darkMode} onNavigate={handleNavigate} />}
           {currentPage === 'about' && <AboutPage darkMode={darkMode} onNavigate={handleNavigate} />}
           {currentPage === 'contact' && <ContactPage darkMode={darkMode} />}
           {currentPage === 'project-detail' && selectedProjectId && (
             <ProjectDetailPage
               darkMode={darkMode}
               projectId={selectedProjectId}
-              onNavigate={handleNavigate}
-            />
-          )}
-          {currentPage === 'donation-detail' && selectedCampaignId && (
-            <DonationDetailPage
-              darkMode={darkMode}
-              campaignId={selectedCampaignId}
               onNavigate={handleNavigate}
             />
           )}

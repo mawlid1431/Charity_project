@@ -1,28 +1,28 @@
 import React, { useState } from 'react';
-import { FolderOpen, Heart } from 'lucide-react';
+import { FolderOpen, Users } from 'lucide-react';
 import { ProjectsManager } from './ProjectsManager';
-import { DonationManager } from './DonationManager';
+import { TeamManager } from './TeamManager';
 
 interface SimpleAdminDashboardProps {
     darkMode: boolean;
 }
 
-type TabType = 'projects' | 'donations';
+type TabType = 'projects' | 'team';
 
 const SimpleAdminDashboard: React.FC<SimpleAdminDashboardProps> = ({ darkMode }) => {
     const [activeTab, setActiveTab] = useState<TabType>('projects');
 
     const tabs = [
         { id: 'projects', label: 'Projects', icon: FolderOpen },
-        { id: 'donations', label: 'Donations', icon: Heart },
+        { id: 'team', label: 'Team', icon: Users },
     ];
 
     const renderTabContent = () => {
         switch (activeTab) {
             case 'projects':
                 return <ProjectsManager darkMode={darkMode} />;
-            case 'donations':
-                return <DonationManager darkMode={darkMode} />;
+            case 'team':
+                return <TeamManager darkMode={darkMode} />;
             default:
                 return <ProjectsManager darkMode={darkMode} />;
         }
@@ -39,7 +39,7 @@ const SimpleAdminDashboard: React.FC<SimpleAdminDashboardProps> = ({ darkMode })
                                 Admin Dashboard
                             </h1>
                             <p className={`mt-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                                Manage your charity projects and donation campaigns
+                                Manage your charity projects and team members
                             </p>
                         </div>
                     </div>
@@ -57,8 +57,8 @@ const SimpleAdminDashboard: React.FC<SimpleAdminDashboardProps> = ({ darkMode })
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id as TabType)}
                                     className={`flex items-center px-1 py-4 border-b-2 font-medium text-sm transition-colors ${activeTab === tab.id
-                                            ? `border-blue-500 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`
-                                            : `border-transparent ${darkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'}`
+                                        ? `border-blue-500 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`
+                                        : `border-transparent ${darkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'}`
                                         }`}
                                 >
                                     <Icon className="w-5 h-5 mr-2" />

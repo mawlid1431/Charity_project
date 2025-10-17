@@ -2,8 +2,6 @@ import { supabase } from './client';
 import type { Database } from './types';
 
 type Project = Database['public']['Tables']['projects']['Row'];
-type Donation = Database['public']['Tables']['donations']['Row'];
-type DonationCampaign = Database['public']['Tables']['donation_campaigns']['Row'];
 
 // Projects
 export async function getProjects() {
@@ -67,57 +65,6 @@ export async function deleteProject(id: string) {
         .eq('id', id);
 
     if (error) throw error;
-}
-
-// Donations
-export async function createDonation(donation: Database['public']['Tables']['donations']['Insert']) {
-    const { data, error } = await supabase
-        .from('donations')
-        .insert(donation)
-        .select()
-        .single();
-
-    if (error) throw error;
-    return data as Donation;
-}
-
-export async function getDonations() {
-    const { data, error } = await supabase
-        .from('donations')
-        .select(`
-            *,
-            projects (
-                name
-            )
-        `)
-        .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    return data;
-}
-
-export async function getDonationsByProject(projectId: string) {
-    const { data, error } = await supabase
-        .from('donations')
-        .select('*')
-        .eq('project_id', projectId)
-        .eq('payment_status', 'completed')
-        .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    return data as Donation[];
-}
-
-export async function updateDonationStatus(id: string, status: 'pending' | 'completed' | 'failed') {
-    const { data, error } = await supabase
-        .from('donations')
-        .update({ payment_status: status })
-        .eq('id', id)
-        .select()
-        .single();
-
-    if (error) throw error;
-    return data as Donation;
 }
 
 // Team Members
@@ -199,65 +146,108 @@ export async function deleteTeamMember(id: string) {
     if (error) throw error;
 }
 
-// Donation Campaigns
-export async function getDonationCampaigns() {
+// Testimonials
+export async function getTestimonials() {
     const { data, error } = await supabase
-        .from('donation_campaigns')
+        .from('testimonials')
         .select('*')
         .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data as DonationCampaign[];
+    return data;
 }
 
-export async function getActiveDonationCampaigns() {
+export async function getTestimonialById(id: string) {
     const { data, error } = await supabase
-        .from('donation_campaigns')
-        .select('*')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    return data as DonationCampaign[];
-}
-
-export async function getDonationCampaignById(id: string) {
-    const { data, error } = await supabase
-        .from('donation_campaigns')
+        .from('testimonials')
         .select('*')
         .eq('id', id)
         .single();
 
     if (error) throw error;
-    return data as DonationCampaign;
+    return data;
 }
 
-export async function createDonationCampaign(campaign: Database['public']['Tables']['donation_campaigns']['Insert']) {
+export async function createTestimonial(testimonial: Database['public']['Tables']['testimonials']['Insert']) {
     const { data, error } = await supabase
-        .from('donation_campaigns')
-        .insert(campaign)
+        .from('testimonials')
+        .insert(testimonial)
         .select()
         .single();
 
     if (error) throw error;
-    return data as DonationCampaign;
+    return data;
 }
 
-export async function updateDonationCampaign(id: string, updates: Database['public']['Tables']['donation_campaigns']['Update']) {
+export async function updateTestimonial(id: string, updates: Database['public']['Tables']['testimonials']['Update']) {
     const { data, error } = await supabase
-        .from('donation_campaigns')
+        .from('testimonials')
         .update(updates)
         .eq('id', id)
         .select()
         .single();
 
     if (error) throw error;
-    return data as DonationCampaign;
+    return data;
 }
 
-export async function deleteDonationCampaign(id: string) {
+export async function deleteTestimonial(id: string) {
     const { error } = await supabase
-        .from('donation_campaigns')
+        .from('testimonials')
+        .delete()
+        .eq('id', id);
+
+    if (error) throw error;
+}
+
+// Success Stories
+export async function getSuccessStories() {
+    const { data, error } = await supabase
+        .from('success_stories')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data;
+}
+
+export async function getSuccessStoryById(id: string) {
+    const { data, error } = await supabase
+        .from('success_stories')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    if (error) throw error;
+    return data;
+}
+
+export async function createSuccessStory(story: Database['public']['Tables']['success_stories']['Insert']) {
+    const { data, error } = await supabase
+        .from('success_stories')
+        .insert(story)
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
+}
+
+export async function updateSuccessStory(id: string, updates: Database['public']['Tables']['success_stories']['Update']) {
+    const { data, error } = await supabase
+        .from('success_stories')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
+}
+
+export async function deleteSuccessStory(id: string) {
+    const { error } = await supabase
+        .from('success_stories')
         .delete()
         .eq('id', id);
 
@@ -270,24 +260,10 @@ export async function getDashboardStats() {
         .from('projects')
         .select('*');
 
-    const { data: campaigns } = await supabase
-        .from('donation_campaigns')
-        .select('*');
-
-    const { data: donations } = await supabase
-        .from('donations')
-        .select('amount, payment_status');
-
     const activeProjects = projects?.length || 0;
-    const activeCampaigns = campaigns?.filter(c => c.status === 'active').length || 0;
-    const totalRaised = campaigns?.reduce((sum, c) => sum + (c.raised_amount || 0), 0) || 0;
-    const totalDonations = donations?.filter(d => d.payment_status === 'completed').length || 0;
 
     return {
         activeProjects,
-        activeCampaigns,
-        totalRaised,
-        totalDonations,
-        successRate: campaigns?.length ? Math.round((campaigns.filter(c => c.status === 'completed').length / campaigns.length) * 100) : 0
+        totalProjects: projects?.length || 0
     };
 }

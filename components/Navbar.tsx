@@ -25,8 +25,9 @@ export function Navbar({ darkMode, toggleDarkMode, currentPage, onNavigate }: Na
     { name: 'Home', path: 'home' },
     { name: 'About', path: 'about' },
     { name: 'Projects', path: 'projects' },
-    { name: 'Contact', path: 'contact' },
-    { name: 'Donate', path: 'donate' }
+    { name: 'Success Stories', path: 'success-stories' },
+    { name: 'Testimonials', path: 'testimonials' },
+    { name: 'Contact', path: 'contact' }
   ];
 
   return (
