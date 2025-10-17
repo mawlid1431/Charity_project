@@ -110,10 +110,10 @@ export function ProjectsPage({ darkMode, onNavigate }: ProjectsPageProps) {
       <section className={`py-16 ${darkMode ? 'bg-[#0a1628]' : 'bg-white'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`grid gap-8 ${allProjects.length === 1
-              ? 'grid-cols-1 max-w-md mx-auto'
-              : allProjects.length === 2
-                ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto'
-                : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+            ? 'grid-cols-1 max-w-md mx-auto'
+            : allProjects.length === 2
+              ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto'
+              : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
             }`}>
             {loading ? (
               <div className="col-span-full flex justify-center py-20">
@@ -162,6 +162,7 @@ export function ProjectsPage({ darkMode, onNavigate }: ProjectsPageProps) {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => onNavigate('contact')}
               className="bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white px-12 py-4 rounded-lg shadow-xl"
             >
               Contact Us

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, Calendar, Loader } from 'lucide-react';
+import { ArrowLeft, Calendar, Loader, Play } from 'lucide-react';
 import { getProjectById } from '@/utils/supabase/helpers';
 
 interface Project {
@@ -10,6 +10,7 @@ interface Project {
     image: string;
     date: string;
     created_at: string;
+    video_url?: string;
 }
 
 interface ProjectDetailPageProps {
@@ -101,11 +102,27 @@ export function ProjectDetailPage({ darkMode, projectId, onNavigate }: ProjectDe
                         <h1 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                             {project.name}
                         </h1>
-                        <div className="flex items-center gap-2 text-sm">
-                            <Calendar className={`w-4 h-4 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
-                            <span className={darkMode ? 'text-gray-300' : 'text-gray-700'}>
-                                {new Date(project.date).toLocaleDateString()}
-                            </span>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-sm">
+                                <Calendar className={`w-4 h-4 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
+                                <span className={darkMode ? 'text-gray-300' : 'text-gray-700'}>
+                                    {new Date(project.date).toLocaleDateString()}
+                                </span>
+                            </div>
+
+                            {project.video_url && (
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => window.open(project.video_url, '_blank')}
+                                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
+                                >
+                                    <Play className="w-5 h-5" />
+                                    Watch Video
+                                </motion.button>
+                            )}
+
+
                         </div>
                     </div>
 

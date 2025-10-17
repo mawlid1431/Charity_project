@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Heart, MapPin, Calendar, Users, Droplet, GraduationCap, Stethoscope, X, Loader } from 'lucide-react';
+import { Heart, MapPin, Calendar, Users, Droplet, GraduationCap, Stethoscope, X, Loader, Play } from 'lucide-react';
 import { getSuccessStories } from '@/utils/supabase/helpers';
 
 interface SuccessStoriesPageProps {
@@ -126,17 +126,34 @@ export function SuccessStoriesPage({ darkMode, onNavigate }: SuccessStoriesPageP
                                                             "{story.story}"
                                                         </p>
 
-                                                        <motion.button
-                                                            whileHover={{ scale: 1.05 }}
-                                                            whileTap={{ scale: 0.95 }}
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setSelectedStory(story);
-                                                            }}
-                                                            className="text-[#ff6f0f] text-sm font-medium hover:underline mb-3 flex items-center gap-1"
-                                                        >
-                                                            Read More →
-                                                        </motion.button>
+                                                        <div className="flex gap-2 mb-3">
+                                                            <motion.button
+                                                                whileHover={{ scale: 1.05 }}
+                                                                whileTap={{ scale: 0.95 }}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setSelectedStory(story);
+                                                                }}
+                                                                className="text-[#ff6f0f] text-sm font-medium hover:underline flex items-center gap-1"
+                                                            >
+                                                                Read More →
+                                                            </motion.button>
+
+                                                            {story.video_url && (
+                                                                <motion.button
+                                                                    whileHover={{ scale: 1.05 }}
+                                                                    whileTap={{ scale: 0.95 }}
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        window.open(story.video_url, '_blank');
+                                                                    }}
+                                                                    className="flex items-center gap-1 px-3 py-1 bg-[#ff6f0f] text-white text-sm rounded-full hover:bg-[#ff8f3f] transition-colors"
+                                                                >
+                                                                    <Play className="w-3 h-3" />
+                                                                    Watch Video
+                                                                </motion.button>
+                                                            )}
+                                                        </div>
 
                                                         <div className={`flex items-center gap-3 p-3 rounded-lg ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
                                                             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] flex items-center justify-center flex-shrink-0">

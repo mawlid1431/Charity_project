@@ -75,7 +75,8 @@ export function ProjectsManager({ darkMode, onRefresh }: ProjectsManagerProps) {
                     name: projectData.name,
                     date: projectData.date,
                     description: projectData.description,
-                    image: projectData.image
+                    image: projectData.image,
+                    video_url: projectData.video_url
                 });
                 toast.success('Project updated successfully');
             } else {
@@ -84,7 +85,8 @@ export function ProjectsManager({ darkMode, onRefresh }: ProjectsManagerProps) {
                     name: projectData.name,
                     date: projectData.date,
                     description: projectData.description,
-                    image: projectData.image
+                    image: projectData.image,
+                    video_url: projectData.video_url
                 });
                 toast.success('Project created successfully');
             }

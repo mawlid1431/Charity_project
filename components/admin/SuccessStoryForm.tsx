@@ -17,8 +17,10 @@ export function SuccessStoryForm({ darkMode, story, onClose, onSuccess }: Succes
         location: '',
         story: '',
         date: '',
-        image: ''
+        image: '',
+        video_url: ''
     });
+    const [hasVideo, setHasVideo] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState('');
     const [loading, setLoading] = useState(false);
@@ -30,9 +32,11 @@ export function SuccessStoryForm({ darkMode, story, onClose, onSuccess }: Succes
                 location: story.location || '',
                 story: story.story || '',
                 date: story.date || '',
-                image: story.image || ''
+                image: story.image || '',
+                video_url: story.video_url || ''
             });
             setImagePreview(story.image || '');
+            setHasVideo(!!story.video_url);
         }
     }, [story]);
 
@@ -215,6 +219,50 @@ export function SuccessStoryForm({ darkMode, story, onClose, onSuccess }: Succes
                             placeholder="e.g., March 2024"
                             className={`w-full px-4 py-2 rounded-lg ${darkMode ? 'bg-white/10 text-white' : 'bg-gray-50 text-gray-900'} border ${darkMode ? 'border-white/20' : 'border-gray-300'}`}
                         />
+                    </div>
+
+                    {/* Video Link Option */}
+                    <div>
+                        <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-700'}`}>
+                            Does this project have a video link?
+                        </label>
+                        <div className="flex items-center gap-4 mb-3">
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="radio"
+                                    name="hasVideo"
+                                    checked={hasVideo === true}
+                                    onChange={() => {
+                                        setHasVideo(true);
+                                    }}
+                                    className="text-[#ff6f0f]"
+                                />
+                                <span className={darkMode ? 'text-white' : 'text-gray-700'}>Yes</span>
+                            </label>
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="radio"
+                                    name="hasVideo"
+                                    checked={hasVideo === false}
+                                    onChange={() => {
+                                        setHasVideo(false);
+                                        setFormData({ ...formData, video_url: '' });
+                                    }}
+                                    className="text-[#ff6f0f]"
+                                />
+                                <span className={darkMode ? 'text-white' : 'text-gray-700'}>No</span>
+                            </label>
+                        </div>
+
+                        {hasVideo && (
+                            <input
+                                type="url"
+                                value={formData.video_url}
+                                onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
+                                placeholder="https://youtube.com/watch?v=... or https://vimeo.com/..."
+                                className={`w-full px-4 py-2 rounded-lg ${darkMode ? 'bg-white/10 text-white' : 'bg-gray-50 text-gray-900'} border ${darkMode ? 'border-white/20' : 'border-gray-300'}`}
+                            />
+                        )}
                     </div>
 
                     {/* Buttons */}

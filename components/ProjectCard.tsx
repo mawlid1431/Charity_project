@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { ArrowRight, TrendingUp } from 'lucide-react';
+import { ArrowRight, TrendingUp, Play } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
 interface ProjectCardProps {
@@ -12,6 +12,7 @@ interface ProjectCardProps {
   darkMode: boolean;
   index: number;
   onClick?: () => void;
+  video_url?: string;
 }
 
 export function ProjectCard({
@@ -23,7 +24,8 @@ export function ProjectCard({
   goal,
   darkMode,
   index,
-  onClick
+  onClick,
+  video_url
 }: ProjectCardProps) {
   return (
     <motion.div
@@ -117,14 +119,46 @@ export function ProjectCard({
           </div>
         )}
 
-        <motion.button
-          whileHover={{ scale: 1.03, x: 5 }}
-          whileTap={{ scale: 0.98 }}
-          className="w-full bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] hover:from-[#ff8f3f] hover:to-[#ffa55f] text-white px-6 py-4 rounded-xl transition-all flex items-center justify-center gap-2 group/btn shadow-lg shadow-[#ff6f0f]/20 hover:shadow-xl hover:shadow-[#ff6f0f]/30"
-        >
-          <span>Learn More</span>
-          <ArrowRight className="w-5 h-5 transition-transform group-hover/btn:translate-x-1" />
-        </motion.button>
+        {video_url ? (
+          <div className="flex gap-3">
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onClick?.();
+              }}
+              className="flex-1 bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] hover:from-[#ff8f3f] hover:to-[#ffa55f] text-white px-4 py-3 rounded-xl transition-all flex items-center justify-center gap-2 group/btn shadow-lg shadow-[#ff6f0f]/20 hover:shadow-xl hover:shadow-[#ff6f0f]/30"
+            >
+              <span className="text-sm">Learn More</span>
+              <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(video_url, '_blank');
+              }}
+              className={`px-4 py-3 rounded-xl transition-all flex items-center justify-center gap-2 ${darkMode
+                ? 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
+                : 'bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200'
+                }`}
+            >
+              <Play className="w-4 h-4" />
+              <span className="text-sm">Watch Video</span>
+            </motion.button>
+          </div>
+        ) : (
+          <motion.button
+            whileHover={{ scale: 1.03, x: 5 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] hover:from-[#ff8f3f] hover:to-[#ffa55f] text-white px-6 py-4 rounded-xl transition-all flex items-center justify-center gap-2 group/btn shadow-lg shadow-[#ff6f0f]/20 hover:shadow-xl hover:shadow-[#ff6f0f]/30"
+          >
+            <span>Learn More</span>
+            <ArrowRight className="w-5 h-5 transition-transform group-hover/btn:translate-x-1" />
+          </motion.button>
+        )}
       </div>
     </motion.div>
   );

@@ -1,4 +1,4 @@
-import { Heart, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Heart, Mail, Phone, MapPin, Facebook, Instagram, Youtube } from 'lucide-react';
 
 interface FooterProps {
   darkMode: boolean;
@@ -30,28 +30,28 @@ export function Footer({ darkMode, onNavigate }: FooterProps) {
             </p>
             <div className="flex gap-4">
               <a
-                href="#"
+                href="https://www.facebook.com/profile.php?id=100076237641454"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-[#ff6f0f] hover:bg-[#ff8f3f] transition-colors flex items-center justify-center text-white"
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-[#ff6f0f] hover:bg-[#ff8f3f] transition-colors flex items-center justify-center text-white"
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a
-                href="#"
+                href="https://www.instagram.com/mubarak_charity1/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-[#ff6f0f] hover:bg-[#ff8f3f] transition-colors flex items-center justify-center text-white"
               >
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://www.youtube.com/@mubarakhashi5636"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-[#ff6f0f] hover:bg-[#ff8f3f] transition-colors flex items-center justify-center text-white"
               >
-                <Linkedin className="w-5 h-5" />
+                <Youtube className="w-5 h-5" />
               </a>
             </div>
           </div>

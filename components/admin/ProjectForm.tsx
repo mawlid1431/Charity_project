@@ -9,6 +9,7 @@ interface Project {
     date: string;
     description: string;
     image: string;
+    video_url?: string;
 }
 
 interface ProjectFormProps {
@@ -23,8 +24,10 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
         name: '',
         date: '',
         description: '',
-        image: ''
+        image: '',
+        video_url: ''
     });
+    const [hasVideo, setHasVideo] = useState(false);
 
     const [uploading, setUploading] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
@@ -36,9 +39,11 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                 name: project.name,
                 date: project.date || '',
                 description: project.description,
-                image: project.image
+                image: project.image,
+                video_url: project.video_url || ''
             });
             setImagePreview(project.image);
+            setHasVideo(!!project.video_url);
         }
     }, [project]);
 
@@ -226,6 +231,57 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                                 : 'bg-white border-gray-300 text-gray-900 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
                                 }`}
                         />
+                    </div>
+
+                    {/* Video Link Option */}
+                    <div>
+                        <label className={`text-sm font-medium mb-3 block ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                            Does this project have a video link?
+                        </label>
+                        <div className="flex items-center gap-6 mb-4">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="hasVideo"
+                                    checked={hasVideo === true}
+                                    onChange={() => setHasVideo(true)}
+                                    className="w-4 h-4 text-[#ff6f0f] focus:ring-[#ff6f0f] focus:ring-2"
+                                />
+                                <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Yes</span>
+                            </label>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="hasVideo"
+                                    checked={hasVideo === false}
+                                    onChange={() => {
+                                        setHasVideo(false);
+                                        setFormData(prev => ({ ...prev, video_url: '' }));
+                                    }}
+                                    className="w-4 h-4 text-[#ff6f0f] focus:ring-[#ff6f0f] focus:ring-2"
+                                />
+                                <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>No</span>
+                            </label>
+                        </div>
+
+                        {hasVideo && (
+                            <div>
+                                <label className={`text-sm font-medium mb-2 block ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                    Video URL
+                                </label>
+                                <input
+                                    type="url"
+                                    name="video_url"
+                                    value={formData.video_url}
+                                    onChange={handleChange}
+                                    placeholder="https://youtube.com/watch?v=... or https://vimeo.com/..."
+                                    className={`w-full px-4 py-3 rounded-lg border transition-all ${darkMode
+                                        ? 'bg-[#0f1c3f] border-white/10 text-white placeholder-gray-400 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-[#ff6f0f] focus:ring-2 focus:ring-[#ff6f0f]/20'
+                                        }`}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     {/* Image Upload */}
