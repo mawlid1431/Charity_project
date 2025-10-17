@@ -21,12 +21,9 @@ const SuccessStoriesAdmin: React.FC = () => {
     const [editingStory, setEditingStory] = useState<SuccessStory | null>(null);
     const [formData, setFormData] = useState({
         name: '',
-        age: 0,
         location: '',
-        project: '',
         image: '',
         story: '',
-        impact: '',
         date: ''
     });
 
@@ -56,11 +53,19 @@ const SuccessStoriesAdmin: React.FC = () => {
         setLoading(true);
 
         try {
+            // Add default values for missing fields
+            const storyData = {
+                ...formData,
+                age: 0, // Default age
+                project: 'Community Project', // Default project
+                impact: 'Positive community impact' // Default impact
+            };
+
             if (editingStory) {
                 // Update existing story
                 const { error } = await supabase
                     .from('success_stories')
-                    .update(formData)
+                    .update(storyData)
                     .eq('id', editingStory.id);
 
                 if (error) throw error;
@@ -69,7 +74,7 @@ const SuccessStoriesAdmin: React.FC = () => {
                 // Create new story
                 const { error } = await supabase
                     .from('success_stories')
-                    .insert([formData]);
+                    .insert([storyData]);
 
                 if (error) throw error;
                 alert('Success story created successfully!');
@@ -89,12 +94,9 @@ const SuccessStoriesAdmin: React.FC = () => {
         setEditingStory(story);
         setFormData({
             name: story.name,
-            age: story.age,
             location: story.location,
-            project: story.project,
             image: story.image,
             story: story.story,
-            impact: story.impact,
             date: story.date
         });
         setShowForm(true);
@@ -124,12 +126,9 @@ const SuccessStoriesAdmin: React.FC = () => {
     const resetForm = () => {
         setFormData({
             name: '',
-            age: 0,
             location: '',
-            project: '',
             image: '',
             story: '',
-            impact: '',
             date: ''
         });
         setEditingStory(null);
@@ -140,7 +139,7 @@ const SuccessStoriesAdmin: React.FC = () => {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: name === 'age' ? parseInt(value) || 0 : value
+            [name]: value
         }));
     };
 
@@ -194,6 +193,21 @@ const SuccessStoriesAdmin: React.FC = () => {
                                 </div>
 
                                 <form onSubmit={handleSubmit} className="space-y-6">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Upload Image *
+                                        </label>
+                                        <input
+                                            type="url"
+                                            name="image"
+                                            value={formData.image}
+                                            onChange={handleInputChange}
+                                            required
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            placeholder="https://example.com/image.jpg"
+                                        />
+                                    </div>
+
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -212,23 +226,6 @@ const SuccessStoriesAdmin: React.FC = () => {
 
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                Age *
-                                            </label>
-                                            <input
-                                                type="number"
-                                                name="age"
-                                                value={formData.age}
-                                                onChange={handleInputChange}
-                                                required
-                                                min="1"
-                                                max="120"
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                placeholder="Age"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">
                                                 Location *
                                             </label>
                                             <input
@@ -239,21 +236,6 @@ const SuccessStoriesAdmin: React.FC = () => {
                                                 required
                                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                 placeholder="City, Country"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                Project *
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="project"
-                                                value={formData.project}
-                                                onChange={handleInputChange}
-                                                required
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                placeholder="Related project name"
                                             />
                                         </div>
 
@@ -275,37 +257,7 @@ const SuccessStoriesAdmin: React.FC = () => {
 
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Image URL *
-                                        </label>
-                                        <input
-                                            type="url"
-                                            name="image"
-                                            value={formData.image}
-                                            onChange={handleInputChange}
-                                            required
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            placeholder="https://example.com/image.jpg"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Impact *
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="impact"
-                                            value={formData.impact}
-                                            onChange={handleInputChange}
-                                            required
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            placeholder="e.g., Access to clean water for 200 families"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Story *
+                                            Story / Description *
                                         </label>
                                         <textarea
                                             name="story"
@@ -377,13 +329,11 @@ const SuccessStoriesAdmin: React.FC = () => {
                                             />
                                             <div className="flex-1">
                                                 <div className="flex items-center space-x-2 mb-2">
-                                                    <h3 className="text-lg font-semibold text-gray-900">{story.name}, {story.age}</h3>
+                                                    <h3 className="text-lg font-semibold text-gray-900">{story.name}</h3>
                                                 </div>
-                                                <p className="text-sm text-gray-600 mb-2">{story.location} • {story.project}</p>
+                                                <p className="text-sm text-gray-600 mb-2">{story.location}</p>
                                                 <p className="text-gray-800 mb-2 line-clamp-3">{story.story}</p>
                                                 <div className="flex items-center space-x-4 text-sm text-gray-500">
-                                                    <span>Impact: {story.impact}</span>
-                                                    <span>•</span>
                                                     <span>{story.date}</span>
                                                 </div>
                                             </div>

@@ -14,11 +14,8 @@ interface SuccessStoryFormProps {
 export function SuccessStoryForm({ darkMode, story, onClose, onSuccess }: SuccessStoryFormProps) {
     const [formData, setFormData] = useState({
         name: '',
-        age: 0,
         location: '',
-        project: '',
         story: '',
-        impact: '',
         date: '',
         image: ''
     });
@@ -30,11 +27,8 @@ export function SuccessStoryForm({ darkMode, story, onClose, onSuccess }: Succes
         if (story) {
             setFormData({
                 name: story.name || '',
-                age: story.age || 0,
                 location: story.location || '',
-                project: story.project || '',
                 story: story.story || '',
-                impact: story.impact || '',
                 date: story.date || '',
                 image: story.image || ''
             });
@@ -85,7 +79,10 @@ export function SuccessStoryForm({ darkMode, story, onClose, onSuccess }: Succes
 
             const storyData = {
                 ...formData,
-                image: imageUrl
+                image: imageUrl,
+                age: 0, // Default age
+                project: 'Community Project', // Default project
+                impact: 'Positive community impact' // Default impact
             };
 
             if (story) {
@@ -175,20 +172,6 @@ export function SuccessStoryForm({ darkMode, story, onClose, onSuccess }: Succes
                         />
                     </div>
 
-                    {/* Age */}
-                    <div>
-                        <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-700'}`}>
-                            Age *
-                        </label>
-                        <input
-                            type="number"
-                            required
-                            value={formData.age}
-                            onChange={(e) => setFormData({ ...formData, age: parseInt(e.target.value) })}
-                            className={`w-full px-4 py-2 rounded-lg ${darkMode ? 'bg-white/10 text-white' : 'bg-gray-50 text-gray-900'} border ${darkMode ? 'border-white/20' : 'border-gray-300'}`}
-                        />
-                    </div>
-
                     {/* Location */}
                     <div>
                         <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-700'}`}>
@@ -204,25 +187,10 @@ export function SuccessStoryForm({ darkMode, story, onClose, onSuccess }: Succes
                         />
                     </div>
 
-                    {/* Project */}
-                    <div>
-                        <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-700'}`}>
-                            Project *
-                        </label>
-                        <input
-                            type="text"
-                            required
-                            value={formData.project}
-                            onChange={(e) => setFormData({ ...formData, project: e.target.value })}
-                            placeholder="e.g., Clean Water Initiative"
-                            className={`w-full px-4 py-2 rounded-lg ${darkMode ? 'bg-white/10 text-white' : 'bg-gray-50 text-gray-900'} border ${darkMode ? 'border-white/20' : 'border-gray-300'}`}
-                        />
-                    </div>
-
                     {/* Story */}
                     <div>
                         <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-700'}`}>
-                            Story *
+                            Story / Description *
                         </label>
                         <textarea
                             required
@@ -230,21 +198,6 @@ export function SuccessStoryForm({ darkMode, story, onClose, onSuccess }: Succes
                             onChange={(e) => setFormData({ ...formData, story: e.target.value })}
                             rows={4}
                             placeholder="Share their success story..."
-                            className={`w-full px-4 py-2 rounded-lg ${darkMode ? 'bg-white/10 text-white' : 'bg-gray-50 text-gray-900'} border ${darkMode ? 'border-white/20' : 'border-gray-300'}`}
-                        />
-                    </div>
-
-                    {/* Impact */}
-                    <div>
-                        <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-700'}`}>
-                            Impact *
-                        </label>
-                        <input
-                            type="text"
-                            required
-                            value={formData.impact}
-                            onChange={(e) => setFormData({ ...formData, impact: e.target.value })}
-                            placeholder="e.g., Access to clean water for 200 families"
                             className={`w-full px-4 py-2 rounded-lg ${darkMode ? 'bg-white/10 text-white' : 'bg-gray-50 text-gray-900'} border ${darkMode ? 'border-white/20' : 'border-gray-300'}`}
                         />
                     </div>
