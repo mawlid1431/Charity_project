@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Heart, MapPin, Calendar, Users, Droplets, GraduationCap, Stethoscope, UtensilsCrossed, X, Loader } from 'lucide-react';
+import { Heart, MapPin, Calendar, Users, Droplet, GraduationCap, Stethoscope, X, Loader } from 'lucide-react';
 import { getSuccessStories } from '@/utils/supabase/helpers';
 
 interface SuccessStoriesPageProps {
@@ -30,10 +30,10 @@ export function SuccessStoriesPage({ darkMode, onNavigate }: SuccessStoriesPageP
 
     // Icon mapping for projects
     const getProjectIcon = (project: string) => {
-        if (project.toLowerCase().includes('water')) return Droplets;
+        if (project.toLowerCase().includes('water')) return Droplet;
         if (project.toLowerCase().includes('education')) return GraduationCap;
         if (project.toLowerCase().includes('medical') || project.toLowerCase().includes('health')) return Stethoscope;
-        if (project.toLowerCase().includes('food')) return UtensilsCrossed;
+        if (project.toLowerCase().includes('food')) return Heart;
         return Heart;
     };
 
@@ -44,7 +44,7 @@ export function SuccessStoriesPage({ darkMode, onNavigate }: SuccessStoriesPageP
             age: 32,
             location: 'Hargeisa, Somaliland',
             project: 'Clean Water Initiative',
-            icon: Droplets,
+            icon: Droplet,
             image: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=800',
             story: 'Before the well was built in our village, I had to walk 5 kilometers every day to fetch water for my family. Now, we have clean water right in our community. My children are healthier, and I have time to work and support my family.',
             impact: 'Access to clean water for 200 families',
@@ -80,7 +80,7 @@ export function SuccessStoriesPage({ darkMode, onNavigate }: SuccessStoriesPageP
             age: 38,
             location: 'Erigavo, Somaliland',
             project: 'Emergency Food Relief',
-            icon: UtensilsCrossed,
+            icon: Heart,
             image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800',
             story: 'During the drought, my family struggled to find food. The emergency food packages kept us alive during the hardest months. Now the rains have returned, and we are rebuilding our lives with hope.',
             impact: 'Food support for 300 families',
@@ -92,7 +92,7 @@ export function SuccessStoriesPage({ darkMode, onNavigate }: SuccessStoriesPageP
             age: 28,
             location: 'Hargeisa, Somaliland',
             project: 'Clean Water Initiative',
-            icon: Droplets,
+            icon: Droplet,
             image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800',
             story: 'As a mother of four, clean water changed everything for us. My children no longer get sick from contaminated water. They can go to school regularly, and I can focus on our small business instead of spending hours fetching water.',
             impact: 'Improved health for entire community',
@@ -280,7 +280,10 @@ export function SuccessStoriesPage({ darkMode, onNavigate }: SuccessStoriesPageP
                                                 {selectedStory.name}, {selectedStory.age}
                                             </h2>
                                             <div className="flex items-center gap-2 mt-2">
-                                                <selectedStory.icon className="w-4 h-4 text-[#ff6f0f]" />
+                                                {(() => {
+                                                    const ModalIcon = selectedStory.icon || getProjectIcon(selectedStory.project);
+                                                    return <ModalIcon className="w-4 h-4 text-[#ff6f0f]" />;
+                                                })()}
                                                 <span className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                                                     {selectedStory.project}
                                                 </span>
