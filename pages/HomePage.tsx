@@ -228,7 +228,7 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
                 className="grid grid-cols-3 gap-2 sm:gap-4 py-4"
               >
                 {[
-                  { value: 'over 10', label: 'Projects' },
+                  { value: '10+', label: 'Projects' },
                   { value: 'Somaliland', label: 'Somaliland' },
                   { value: '100%', label: 'Transparent' },
                 ].map((stat, index) => (
