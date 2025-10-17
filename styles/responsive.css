@@ -1,0 +1,83 @@
+/* Custom responsive styles */
+
+/* Hide scrollbar for horizontal scrolling tabs */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
+
+/* Better touch targets for mobile */
+@media (max-width: 768px) {
+
+    button,
+    a {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Improve text readability on mobile */
+    body {
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+    }
+
+    /* Better form inputs on mobile */
+    input,
+    textarea,
+    select {
+        font-size: 16px;
+        /* Prevents zoom on iOS */
+    }
+}
+
+/* Smooth scrolling for better UX */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Better focus states for accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid #ff6f0f;
+    outline-offset: 2px;
+}
+
+/* Improve grid layouts on very small screens */
+@media (max-width: 480px) {
+    .grid-responsive {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* Better spacing for mobile cards */
+@media (max-width: 640px) {
+    .card-mobile {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+    }
+}
+
+/* Ensure images are responsive */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Better modal positioning on mobile */
+@media (max-width: 768px) {
+    .modal-mobile {
+        margin: 1rem;
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
+    }
+}

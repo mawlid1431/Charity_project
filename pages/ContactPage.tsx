@@ -98,7 +98,7 @@ export function ContactPage({ darkMode }: ContactPageProps) {
       {/* Contact Methods */}
       <section className={`py-16 ${darkMode ? 'bg-[#0a1628]' : 'bg-white'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {contactMethods.map((method, index) => (
               <motion.a
                 key={index}
@@ -107,16 +107,16 @@ export function ContactPage({ darkMode }: ContactPageProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className={`block rounded-2xl p-6 ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
+                className={`block rounded-xl sm:rounded-2xl p-4 sm:p-6 ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-100'
                   } shadow-lg hover:shadow-2xl transition-all cursor-pointer`}
               >
                 <div className={`w-14 h-14 rounded-xl bg-gradient-to-r ${method.color} flex items-center justify-center mb-4 text-white`}>
                   <method.icon className="w-7 h-7" />
                 </div>
-                <h3 className={`mb-2 ${darkMode ? 'text-white' : 'text-[#1a2f5f]'}`}>
+                <h3 className={`mb-2 text-base sm:text-lg font-semibold ${darkMode ? 'text-white' : 'text-[#1a2f5f]'}`}>
                   {method.title}
                 </h3>
-                <p className={`${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                <p className={`text-sm sm:text-base ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                   {method.content}
                 </p>
               </motion.a>

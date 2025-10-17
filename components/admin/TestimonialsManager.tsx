@@ -58,9 +58,9 @@ export function TestimonialsManager({ darkMode }: TestimonialsManagerProps) {
     return (
         <div>
             {/* Header */}
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <div>
-                    <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <h2 className={`text-xl sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         Testimonials
                     </h2>
                     <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -71,9 +71,9 @@ export function TestimonialsManager({ darkMode }: TestimonialsManagerProps) {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setShowForm(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white rounded-lg shadow-lg"
+                    className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white rounded-lg shadow-lg min-h-[44px] text-sm sm:text-base w-full sm:w-auto justify-center"
                 >
-                    <Plus className="w-5 h-5" />
+                    <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
                     Add Testimonial
                 </motion.button>
             </div>
@@ -88,7 +88,7 @@ export function TestimonialsManager({ darkMode }: TestimonialsManagerProps) {
                     <p>No testimonials yet. Add your first testimonial!</p>
                 </div>
             ) : (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {testimonials.map((testimonial) => (
                         <motion.div
                             key={testimonial.id}

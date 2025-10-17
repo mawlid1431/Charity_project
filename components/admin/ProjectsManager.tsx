@@ -11,6 +11,7 @@ interface Project {
     date: string;
     description: string;
     image: string;
+    video_url: string | null;
     created_at: string;
 }
 
@@ -137,7 +138,7 @@ export function ProjectsManager({ darkMode, onRefresh }: ProjectsManagerProps) {
                 </div>
             ) : (
                 /* Projects Grid */
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                     {projects.map((project, index) => (
                         <motion.div
                             key={project.id}
@@ -169,11 +170,11 @@ export function ProjectsManager({ darkMode, onRefresh }: ProjectsManagerProps) {
                             </div>
 
                             {/* Project Content */}
-                            <div className="p-6">
-                                <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            <div className="p-4 sm:p-6">
+                                <h3 className={`text-base sm:text-lg font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                                     {project.name}
                                 </h3>
-                                <p className={`text-sm mb-6 line-clamp-3 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                                <p className={`text-sm mb-4 sm:mb-6 line-clamp-3 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                                     {project.description}
                                 </p>
 
@@ -183,7 +184,7 @@ export function ProjectsManager({ darkMode, onRefresh }: ProjectsManagerProps) {
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() => handleEditProject(project)}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg transition-all ${darkMode
+                                        className={`flex-1 flex items-center justify-center gap-2 py-3 px-3 rounded-lg transition-all text-sm min-h-[44px] ${darkMode
                                             ? 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20'
                                             : 'bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200'
                                             }`}
@@ -195,7 +196,7 @@ export function ProjectsManager({ darkMode, onRefresh }: ProjectsManagerProps) {
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() => handleDeleteProject(project.id)}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg transition-all ${darkMode
+                                        className={`flex-1 flex items-center justify-center gap-2 py-3 px-3 rounded-lg transition-all text-sm min-h-[44px] ${darkMode
                                             ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20'
                                             : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
                                             }`}

@@ -38,21 +38,21 @@ export function AdminDashboard({ darkMode, toggleDarkMode, onLogout }: AdminDash
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Header */}
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                 <div>
-                    <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <h1 className={`text-2xl sm:text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         Admin Dashboard
                     </h1>
-                    <p className={`text-lg mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <p className={`text-base sm:text-lg mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                         Manage Mubarak Charity operations
                     </p>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-2 sm:gap-3 w-full sm:w-auto">
                     <motion.button
                         whileHover={{ scale: 1.1, rotate: 180 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={toggleDarkMode}
-                        className={`p-3 rounded-xl transition-all shadow-lg ${darkMode
+                        className={`p-3 rounded-xl transition-all shadow-lg min-w-[44px] min-h-[44px] flex items-center justify-center ${darkMode
                             ? 'bg-white/10 text-white hover:bg-white/20'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                             }`}
@@ -63,24 +63,25 @@ export function AdminDashboard({ darkMode, toggleDarkMode, onLogout }: AdminDash
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => window.location.href = '/'}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${darkMode
+                        className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base min-h-[44px] ${darkMode
                             ? 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20'
                             : 'bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200'
                             }`}
                     >
-                        Back to Site
+                        <span className="hidden sm:inline">Back to Site</span>
+                        <span className="sm:hidden">Site</span>
                     </motion.button>
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={onLogout}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${darkMode
+                        className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base min-h-[44px] ${darkMode
                             ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20'
                             : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
                             }`}
                     >
                         <LogOut className="w-4 h-4" />
-                        Logout
+                        <span className="hidden sm:inline">Logout</span>
                     </motion.button>
                 </div>
             </div>
@@ -114,62 +115,62 @@ export function AdminDashboard({ darkMode, toggleDarkMode, onLogout }: AdminDash
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-2 mb-6 overflow-x-auto">
+            <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setActiveTab('projects')}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all whitespace-nowrap ${activeTab === 'projects'
+                    className={`flex items-center gap-2 px-4 sm:px-6 py-3 rounded-lg font-medium transition-all whitespace-nowrap min-w-fit ${activeTab === 'projects'
                         ? 'bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white shadow-lg shadow-[#ff6f0f]/30'
                         : darkMode
                             ? 'bg-white/5 text-gray-400 hover:bg-white/10'
                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                         }`}
                 >
-                    <FolderKanban className="w-5 h-5" />
-                    Projects
+                    <FolderKanban className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-sm sm:text-base">Projects</span>
                 </motion.button>
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setActiveTab('success-stories')}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all whitespace-nowrap ${activeTab === 'success-stories'
+                    className={`flex items-center gap-2 px-4 sm:px-6 py-3 rounded-lg font-medium transition-all whitespace-nowrap min-w-fit ${activeTab === 'success-stories'
                         ? 'bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white shadow-lg shadow-[#ff6f0f]/30'
                         : darkMode
                             ? 'bg-white/5 text-gray-400 hover:bg-white/10'
                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                         }`}
                 >
-                    <Heart className="w-5 h-5" />
-                    Success Stories
+                    <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-sm sm:text-base">Stories</span>
                 </motion.button>
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setActiveTab('testimonials')}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all whitespace-nowrap ${activeTab === 'testimonials'
+                    className={`flex items-center gap-2 px-4 sm:px-6 py-3 rounded-lg font-medium transition-all whitespace-nowrap min-w-fit ${activeTab === 'testimonials'
                         ? 'bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white shadow-lg shadow-[#ff6f0f]/30'
                         : darkMode
                             ? 'bg-white/5 text-gray-400 hover:bg-white/10'
                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                         }`}
                 >
-                    <MessageSquareQuote className="w-5 h-5" />
-                    Testimonials
+                    <MessageSquareQuote className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-sm sm:text-base">Reviews</span>
                 </motion.button>
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setActiveTab('team')}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all whitespace-nowrap ${activeTab === 'team'
+                    className={`flex items-center gap-2 px-4 sm:px-6 py-3 rounded-lg font-medium transition-all whitespace-nowrap min-w-fit ${activeTab === 'team'
                         ? 'bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white shadow-lg shadow-[#ff6f0f]/30'
                         : darkMode
                             ? 'bg-white/5 text-gray-400 hover:bg-white/10'
                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                         }`}
                 >
-                    <UsersRound className="w-5 h-5" />
-                    Team
+                    <UsersRound className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-sm sm:text-base">Team</span>
                 </motion.button>
             </div>
 

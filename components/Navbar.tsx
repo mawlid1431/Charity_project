@@ -143,18 +143,18 @@ export function Navbar({ darkMode, toggleDarkMode, currentPage, onNavigate }: Na
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center gap-4">
+          <div className="md:hidden flex items-center gap-2">
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={toggleDarkMode}
-              className="p-2 rounded-lg text-white"
+              className="p-3 rounded-lg text-white hover:bg-white/10 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
               {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => setIsOpen(!isOpen)}
-              className="text-white p-2"
+              className="text-white p-3 hover:bg-white/10 transition-colors rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
               <AnimatePresence mode="wait">
                 {isOpen ? (
@@ -194,7 +194,7 @@ export function Navbar({ darkMode, toggleDarkMode, currentPage, onNavigate }: Na
             transition={{ duration: 0.3 }}
             className="md:hidden bg-[#0f1c3f]/95 backdrop-blur-xl border-t-2 border-[#ff6f0f]/20 ring-1 ring-white/10 shadow-lg"
           >
-            <div className="px-4 py-6 space-y-2">
+            <div className="px-4 py-6 space-y-3">
               {navItems.map((item, index) => (
                 <motion.button
                   key={item.path}
@@ -206,7 +206,7 @@ export function Navbar({ darkMode, toggleDarkMode, currentPage, onNavigate }: Na
                     onNavigate(item.path);
                     setIsOpen(false);
                   }}
-                  className={`block w-full text-left px-6 py-4 rounded-xl transition-all ${currentPage === item.path
+                  className={`block w-full text-left px-6 py-4 rounded-xl transition-all text-lg min-h-[56px] flex items-center ${currentPage === item.path
                     ? 'bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white shadow-lg'
                     : 'text-white hover:bg-white/10'
                     }`}

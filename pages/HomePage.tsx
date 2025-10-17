@@ -111,8 +111,8 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
           className="absolute inset-0"
         />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-8 sm:py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left Image Slider with Typewriter Text Below */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -203,7 +203,7 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-white leading-tight"
+                className="text-white leading-tight text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold"
               >
                 Together, We Build a{' '}
                 <span className="bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] bg-clip-text text-transparent">
@@ -215,7 +215,7 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="text-white/80 leading-relaxed max-w-xl"
+                className="text-white/80 leading-relaxed max-w-xl text-base sm:text-lg"
               >
                 Empowering communities through education, healthcare, and sustainable development. Join us in creating lasting change for families in need.
               </motion.p>
@@ -225,7 +225,7 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="grid grid-cols-3 gap-4 py-4"
+                className="grid grid-cols-3 gap-2 sm:gap-4 py-4"
               >
                 {[
                   { value: 'over 10', label: 'Projects' },
@@ -237,8 +237,8 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
                     whileHover={{ y: -5 }}
                     className="text-center"
                   >
-                    <p className="text-3xl text-white mb-1">{stat.value}</p>
-                    <p className="text-white/60 text-sm">{stat.label}</p>
+                    <p className="text-2xl sm:text-3xl text-white mb-1">{stat.value}</p>
+                    <p className="text-white/60 text-xs sm:text-sm">{stat.label}</p>
                   </motion.div>
                 ))}
               </motion.div>
@@ -247,26 +247,26 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7 }}
-                className="flex flex-wrap gap-4"
+                className="flex flex-col sm:flex-row gap-4"
               >
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => onNavigate('projects')}
-                  className="bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white px-8 py-3 rounded-xl flex items-center gap-3 shadow-lg shadow-[#ff6f0f]/30 hover:shadow-xl hover:shadow-[#ff6f0f]/40 transition-all group"
+                  className="bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-[#ff6f0f]/30 hover:shadow-xl hover:shadow-[#ff6f0f]/40 transition-all group min-h-[48px] text-sm sm:text-base"
                 >
-                  <Heart className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <Heart className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
                   <span>View Projects</span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
 
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => onNavigate('about')}
-                  className="bg-white/10 backdrop-blur-sm text-white px-8 py-3 rounded-xl flex items-center gap-3 border border-white/20 hover:bg-white/20 transition-all group"
+                  className="bg-white/10 backdrop-blur-sm text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl flex items-center justify-center gap-3 border border-white/20 hover:bg-white/20 transition-all group min-h-[48px] text-sm sm:text-base"
                 >
-                  <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <Play className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
                   <span>Learn More</span>
                 </motion.button>
               </motion.div>
@@ -315,7 +315,7 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 max-w-7xl mx-auto" style={{ gap: '6rem' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 max-w-7xl mx-auto">
             {categories.map((category, index) => (
               <motion.div
                 key={index}
@@ -373,10 +373,10 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
           </motion.div>
 
           <div className={`grid gap-8 mb-12 ${projects.length === 1
-              ? 'grid-cols-1 max-w-md mx-auto'
-              : projects.length === 2
-                ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto'
-                : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+            ? 'grid-cols-1 max-w-md mx-auto'
+            : projects.length === 2
+              ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto'
+              : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
             }`}>
             {loading ? (
               <div className="col-span-full flex justify-center py-12">
@@ -475,7 +475,7 @@ export function HomePage({ darkMode, onNavigate }: HomePageProps) {
         <DecorativeElements />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 max-w-7xl mx-auto" style={{ gap: '8rem' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 max-w-4xl mx-auto">
             {stats.map((stat, index) => (
               <motion.div
                 key={index}

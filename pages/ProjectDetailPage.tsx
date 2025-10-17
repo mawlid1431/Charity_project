@@ -10,7 +10,7 @@ interface Project {
     image: string;
     date: string;
     created_at: string;
-    video_url?: string;
+    video_url: string | null;
 }
 
 interface ProjectDetailPageProps {
@@ -114,7 +114,7 @@ export function ProjectDetailPage({ darkMode, projectId, onNavigate }: ProjectDe
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    onClick={() => window.open(project.video_url, '_blank')}
+                                    onClick={() => project.video_url && window.open(project.video_url, '_blank')}
                                     className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
                                 >
                                     <Play className="w-5 h-5" />

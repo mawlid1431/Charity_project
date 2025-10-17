@@ -57,7 +57,7 @@ export function ContactForm({ darkMode }: ContactFormProps) {
       )}
 
       <div>
-        <label className={`block mb-2 ${darkMode ? 'text-white' : 'text-black'}`}>
+        <label className={`block mb-2 text-sm sm:text-base font-medium ${darkMode ? 'text-white' : 'text-black'}`}>
           Full Name
         </label>
         <input
@@ -65,16 +65,16 @@ export function ContactForm({ darkMode }: ContactFormProps) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          className={`w-full px-4 py-3 rounded-lg border ${darkMode
+          className={`w-full px-4 py-3 sm:py-4 rounded-lg border text-base ${darkMode
             ? 'bg-white/5 border-white/10 text-white placeholder:text-white/40'
             : 'bg-white border-black/10 text-black placeholder:text-black/40'
-            } focus:outline-none focus:ring-2 focus:ring-[#ff6f0f]`}
+            } focus:outline-none focus:ring-2 focus:ring-[#ff6f0f] min-h-[48px]`}
           placeholder="Your name"
         />
       </div>
 
       <div>
-        <label className={`block mb-2 ${darkMode ? 'text-white' : 'text-black'}`}>
+        <label className={`block mb-2 text-sm sm:text-base font-medium ${darkMode ? 'text-white' : 'text-black'}`}>
           Email Address
         </label>
         <input
@@ -82,27 +82,27 @@ export function ContactForm({ darkMode }: ContactFormProps) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className={`w-full px-4 py-3 rounded-lg border ${darkMode
+          className={`w-full px-4 py-3 sm:py-4 rounded-lg border text-base ${darkMode
             ? 'bg-white/5 border-white/10 text-white placeholder:text-white/40'
             : 'bg-white border-black/10 text-black placeholder:text-black/40'
-            } focus:outline-none focus:ring-2 focus:ring-[#ff6f0f]`}
+            } focus:outline-none focus:ring-2 focus:ring-[#ff6f0f] min-h-[48px]`}
           placeholder="your@email.com"
         />
       </div>
 
       <div>
-        <label className={`block mb-2 ${darkMode ? 'text-white' : 'text-black'}`}>
+        <label className={`block mb-2 text-sm sm:text-base font-medium ${darkMode ? 'text-white' : 'text-black'}`}>
           Message
         </label>
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           required
-          rows={6}
-          className={`w-full px-4 py-3 rounded-lg border ${darkMode
+          rows={5}
+          className={`w-full px-4 py-3 sm:py-4 rounded-lg border text-base ${darkMode
             ? 'bg-white/5 border-white/10 text-white placeholder:text-white/40'
             : 'bg-white border-black/10 text-black placeholder:text-black/40'
-            } focus:outline-none focus:ring-2 focus:ring-[#ff6f0f] resize-none`}
+            } focus:outline-none focus:ring-2 focus:ring-[#ff6f0f] resize-none min-h-[120px]`}
           placeholder="How can we help you?"
         />
       </div>
@@ -112,7 +112,7 @@ export function ContactForm({ darkMode }: ContactFormProps) {
         disabled={isSubmitting}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="w-full bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white py-4 rounded-lg transition-all shadow-lg hover:shadow-xl hover:shadow-[#ff6f0f]/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        className="w-full bg-gradient-to-r from-[#ff6f0f] to-[#ff8f3f] text-white py-4 sm:py-5 rounded-lg transition-all shadow-lg hover:shadow-xl hover:shadow-[#ff6f0f]/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base sm:text-lg font-medium min-h-[56px]"
       >
         <Send className="w-5 h-5" />
         {isSubmitting ? 'Sending...' : 'Send Message'}

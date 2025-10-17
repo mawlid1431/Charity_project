@@ -9,7 +9,7 @@ interface Project {
     date: string;
     description: string;
     image: string;
-    video_url?: string;
+    video_url: string | null;
 }
 
 interface ProjectFormProps {
@@ -141,7 +141,7 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4"
             onClick={onCancel}
         >
             <motion.div
@@ -149,28 +149,28 @@ export function ProjectForm({ darkMode, project, onSave, onCancel }: ProjectForm
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
                 onClick={(e) => e.stopPropagation()}
-                className={`w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl ${darkMode ? 'bg-[#1a2f5f] border border-white/10' : 'bg-white border border-gray-200'
+                className={`w-full max-w-3xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto rounded-xl sm:rounded-2xl shadow-2xl modal-mobile ${darkMode ? 'bg-[#1a2f5f] border border-white/10' : 'bg-white border border-gray-200'
                     }`}
             >
                 {/* Header */}
-                <div className={`sticky top-0 z-10 flex justify-between items-center p-6 border-b ${darkMode ? 'bg-[#1a2f5f] border-white/10' : 'bg-white border-gray-200'
+                <div className={`sticky top-0 z-10 flex justify-between items-center p-4 sm:p-6 border-b ${darkMode ? 'bg-[#1a2f5f] border-white/10' : 'bg-white border-gray-200'
                     }`}>
-                    <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <h2 className={`text-xl sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         {project ? 'Edit Project' : 'Add New Project'}
                     </h2>
                     <motion.button
                         whileHover={{ scale: 1.1, rotate: 90 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={onCancel}
-                        className={`p-2 rounded-lg transition-all ${darkMode ? 'hover:bg-white/10 text-gray-400' : 'hover:bg-gray-100 text-gray-600'
+                        className={`p-2 sm:p-3 rounded-lg transition-all min-w-[44px] min-h-[44px] flex items-center justify-center ${darkMode ? 'hover:bg-white/10 text-gray-400' : 'hover:bg-gray-100 text-gray-600'
                             }`}
                     >
-                        <X className="w-6 h-6" />
+                        <X className="w-5 h-5 sm:w-6 sm:h-6" />
                     </motion.button>
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                     {/* Project Name */}
                     <div>
                         <label className={`flex items-center gap-2 text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'
