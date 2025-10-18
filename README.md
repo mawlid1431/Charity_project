@@ -45,6 +45,7 @@ A modern, professional charity website built with React, TypeScript, Tailwind CS
 - 📊 **Live Statistics** - Real-time dashboard with key metrics
 - 🔗 **Donation Links** - Add PayPal, Stripe, or custom payment links
 - 🔐 **Secure Access** - Protected admin routes with authentication
+- 🔑 **Password Management** - Change admin password with validation
 - 📈 **Status Management** - Set projects as Active, Paused, or Completed
 
 ## 🚀 Quick Start

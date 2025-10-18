@@ -39,7 +39,7 @@ node_modules/
 *.sql
 *.bak
 migrations/
-
+PASSWORD_CHANGE.md/
 # Media and uploads
 /media/
 uploads/
